@@ -1,0 +1,32 @@
+{
+    "name": "lasserafn/laravel-economic",
+    "description": "Economic REST wrapper for Laravel",
+    "keywords": ["laravel", "wrapper", "economic", "api", "integration", "e-conomic"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lasse Rafn",
+            "email": "lasserafn@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.3",
+        "illuminate/support": "8.*|9.*",
+        "guzzlehttp/guzzle": "^6.2|^7.0|^7.4",
+        "artisaninweb/laravel-soap": "^0.3"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "LasseRafn\\Economic\\": "src"
+        }
+    },
+    "extra":{
+        "laravel":{
+           "providers":[
+                "LasseRafn\\Economic\\EconomicServiceProvider"
+           ]
+        }
+    }
+}
