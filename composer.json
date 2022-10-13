@@ -1,5 +1,5 @@
 {
-    "name": "lasserafn/laravel-economic",
+    "name": "rackbeat/laravel-economic",
     "description": "Economic REST wrapper for Laravel",
     "keywords": ["laravel", "wrapper", "economic", "api", "integration", "e-conomic"],
     "license": "MIT",
