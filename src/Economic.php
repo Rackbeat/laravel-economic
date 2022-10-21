@@ -13,12 +13,14 @@ use LasseRafn\Economic\Builders\CustomerGroupBuilder;
 use LasseRafn\Economic\Builders\DraftInvoiceBuilder;
 use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
+use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
 use LasseRafn\Economic\Builders\JournalBuilder;
 use LasseRafn\Economic\Builders\LayoutBuilder;
 use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
 use LasseRafn\Economic\Builders\ProductBuilder;
 use LasseRafn\Economic\Builders\ProductGroupBuilder;
+use LasseRafn\Economic\Builders\ProjectBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
 use LasseRafn\Economic\Builders\SentOrderBuilder;
 use LasseRafn\Economic\Builders\SupplierBuilder;
@@ -246,8 +248,30 @@ class Economic
 	 */
 	public function employees()
 	{
-		return new EmployeeBuilder($this->request);
+        $this->initRequest(config('economic.rest_endpoint'));
+
+        return new EmployeeBuilder($this->request);
 	}
+
+    /**
+     * @return EmployeeGroupBuilder()|Builder
+     */
+    public function employeeGroups()
+    {
+        $this->initRequest(config('economic.rest_endpoint'));
+
+        return new EmployeeGroupBuilder($this->request);
+    }
+
+    /**
+     * @return ProjectBuilder()|Builder
+     */
+    public function projects()
+    {
+        $this->initRequest(config('economic.rest_endpoint'));
+
+        return new ProjectBuilder($this->request);
+    }
 
 	/**
 	 * @return UserBuilder()|Builder
@@ -324,8 +348,8 @@ class Economic
 		return $this->request->doRequest('get', $directUrl)->getBody()->getContents();
 	}
 
-	protected function initRequest()
-	{
-		$this->request = new Request($this->agreement, $this->apiSecret, $this->stripNullValues);
-	}
+    protected function initRequest($baseUri = null)
+    {
+        $this->request = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
+    }
 }
