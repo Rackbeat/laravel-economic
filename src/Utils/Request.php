@@ -15,10 +15,10 @@ class Request
 
 	public $beforeRequestHooks = [];
 
-	public function __construct($agreementToken = '', $apiSecret = '', $stripNull = false)
+	public function __construct($agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null)
 	{
 		$this->curl = new Client([
-			'base_uri'        => config('economic.request_endpoint'),
+			'base_uri'        => $baseUri ?? config('economic.request_endpoint'),
 			'headers'         => [
 				'X-AppSecretToken'      => $apiSecret,
 				'X-AgreementGrantToken' => $agreementToken,
@@ -51,6 +51,10 @@ class Request
 				$message = $exception->getResponse()->getBody()->getContents();
 				$code    = $exception->getResponse()->getStatusCode();
 			}
+
+            if ($code == 404){
+                return [];
+            }
 
 			throw new EconomicRequestException($message, $code);
 		} catch (ServerException $exception) {
