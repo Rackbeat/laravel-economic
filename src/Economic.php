@@ -37,6 +37,8 @@ class Economic
 {
 	protected $request;
 
+	protected $newApiRequest;
+
 	protected $agreement;
 
 	protected $apiSecret;
@@ -45,14 +47,15 @@ class Economic
 
 	protected $stripNullValues;
 
-	public function __construct($agreement = null, $apiSecret = null, $apiPublic = null, $stripNull = null)
+	public function __construct($agreement = null, $apiSecret = null, $apiPublic = null, $stripNull = null, $base_uri = null)
 	{
 		$this->agreement       = $agreement ?? config('economic.agreement');
 		$this->apiSecret       = $apiSecret ?? config('economic.secret_token');
 		$this->apiPublic       = $apiPublic ?? config('economic.public_token');
 		$this->stripNullValues = $stripNull ?? config('economic.strip_null', false);
 
-		$this->initRequest();
+		$this->initRequest($base_uri);
+		$this->initNewApiRequest(config('economic.rest_endpoint'));
 	}
 
 	public function addBeforeRequestHook($callback)
@@ -248,9 +251,7 @@ class Economic
 	 */
 	public function employees()
 	{
-        $this->initRequest(config('economic.rest_endpoint'));
-
-        return new EmployeeBuilder($this->request);
+        return new EmployeeBuilder($this->newApiRequest);
 	}
 
     /**
@@ -258,9 +259,7 @@ class Economic
      */
     public function employeeGroups()
     {
-        $this->initRequest(config('economic.rest_endpoint'));
-
-        return new EmployeeGroupBuilder($this->request);
+        return new EmployeeGroupBuilder($this->newApiRequest);
     }
 
     /**
@@ -268,9 +267,7 @@ class Economic
      */
     public function projects()
     {
-        $this->initRequest(config('economic.rest_endpoint'));
-
-        return new ProjectBuilder($this->request);
+        return new ProjectBuilder($this->newApiRequest);
     }
 
 	/**
@@ -351,5 +348,10 @@ class Economic
     protected function initRequest($baseUri = null)
     {
         $this->request = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
+    }
+
+    protected function initNewApiRequest($baseUri = null)
+    {
+        $this->newApiRequest = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
     }
 }
