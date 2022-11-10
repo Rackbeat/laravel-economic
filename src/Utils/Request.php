@@ -52,10 +52,6 @@ class Request
 				$code    = $exception->getResponse()->getStatusCode();
 			}
 
-            if ($code == 404){
-                return [];
-            }
-
 			throw new EconomicRequestException($message, $code);
 		} catch (ServerException $exception) {
 			$message = $exception->getMessage();
