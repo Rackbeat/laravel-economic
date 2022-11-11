@@ -187,6 +187,55 @@ class BaseBuilder
         });
     }
 
+    /**
+     * @param array $filters
+     * @param int   $pageSize
+     * @return \Generator
+     */
+    public function allWithGenerators($filters = [], $pageSize = 500)
+    {
+        $page = 0;
+        $hasMore = true;
+        $items = collect([]);
+
+        $urlFilters = $this->generateQueryStringFromFilterArray($filters, true);
+
+        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlFilters) {
+            while ($hasMore) {
+
+                $responseData = $this->get($page, $pageSize, $urlFilters);
+
+                $items = $this->parseResponse($responseData, $items);
+
+                if (count($responseData->collection) === 0) {
+                    $hasMore = false;
+
+                    break;
+                }
+
+                foreach ($items as $result){
+                    yield $result;
+                }
+
+                $page++;
+            }
+
+            return $items;
+        });
+    }
+
+    public function parseResponse($responseData, \Illuminate\Support\Collection $items): \Illuminate\Support\Collection
+    {
+
+        foreach ($responseData->collection as $item) {
+            $model = new $this->model($this->request, $item);
+
+            $items->push($model);
+        }
+
+        return $items;
+    }
+
 	/**
 	 * @param $data
 	 *
