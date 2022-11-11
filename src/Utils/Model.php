@@ -10,7 +10,7 @@ class Model
 	protected $entity;
 	protected $primaryKey;
 	protected $modelClass = self::class;
-
+    protected $rest_version = '';
 	/**
 	 * @var Request
 	 */
@@ -105,6 +105,11 @@ class Model
 
 	protected function getUpdateEndpoint()
 	{
-		return "/{$this->entity}/{$this->{$this->primaryKey}}";
+	    $updateEndpoint = "{$this->rest_version}/{$this->entity}";
+	    if (empty($this->rest_version)){
+	        $updateEndpoint .= "/{$this->{$this->primaryKey}}";
+        }
+
+	    return $updateEndpoint;
 	}
 }
