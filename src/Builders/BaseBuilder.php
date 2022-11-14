@@ -190,7 +190,10 @@ class BaseBuilder
     /**
      * @param array $filters
      * @param int   $pageSize
+     *
      * @return \Generator
+     * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
+     * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
      */
     public function allWithGenerators($filters = [], $pageSize = 500)
     {
@@ -203,7 +206,7 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlFilters) {
             while ($hasMore) {
 
-                $responseData = $this->get($page, $pageSize, $urlFilters);
+                $responseData = $this->getRequest($page, $pageSize, $urlFilters);
 
                 $items = $this->parseResponse($responseData, $items);
 
@@ -222,6 +225,13 @@ class BaseBuilder
 
             return $items;
         });
+    }
+
+    protected function getRequest($page, $pageSize, $urlFilters): \stdClass
+    {
+        $response = $this->request->doRequest('get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}");
+
+        return json_decode($response->getBody()->getContents());
     }
 
     public function parseResponse($responseData, \Illuminate\Support\Collection $items): \Illuminate\Support\Collection
