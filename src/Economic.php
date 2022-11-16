@@ -13,12 +13,14 @@ use LasseRafn\Economic\Builders\CustomerGroupBuilder;
 use LasseRafn\Economic\Builders\DraftInvoiceBuilder;
 use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
+use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
 use LasseRafn\Economic\Builders\JournalBuilder;
 use LasseRafn\Economic\Builders\LayoutBuilder;
 use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
 use LasseRafn\Economic\Builders\ProductBuilder;
 use LasseRafn\Economic\Builders\ProductGroupBuilder;
+use LasseRafn\Economic\Builders\ProjectBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
 use LasseRafn\Economic\Builders\SentOrderBuilder;
 use LasseRafn\Economic\Builders\SupplierBuilder;
@@ -35,6 +37,8 @@ class Economic
 {
 	protected $request;
 
+	protected $newApiRequest;
+
 	protected $agreement;
 
 	protected $apiSecret;
@@ -43,14 +47,15 @@ class Economic
 
 	protected $stripNullValues;
 
-	public function __construct($agreement = null, $apiSecret = null, $apiPublic = null, $stripNull = null)
+	public function __construct($agreement = null, $apiSecret = null, $apiPublic = null, $stripNull = null, $base_uri = null)
 	{
 		$this->agreement       = $agreement ?? config('economic.agreement');
 		$this->apiSecret       = $apiSecret ?? config('economic.secret_token');
 		$this->apiPublic       = $apiPublic ?? config('economic.public_token');
 		$this->stripNullValues = $stripNull ?? config('economic.strip_null', false);
 
-		$this->initRequest();
+		$this->initRequest($base_uri);
+		$this->initNewApiRequest(config('economic.rest_endpoint'));
 	}
 
 	public function addBeforeRequestHook($callback)
@@ -246,8 +251,24 @@ class Economic
 	 */
 	public function employees()
 	{
-		return new EmployeeBuilder($this->request);
+        return new EmployeeBuilder($this->newApiRequest);
 	}
+
+    /**
+     * @return EmployeeGroupBuilder()|Builder
+     */
+    public function employeeGroups()
+    {
+        return new EmployeeGroupBuilder($this->newApiRequest);
+    }
+
+    /**
+     * @return ProjectBuilder()|Builder
+     */
+    public function projects()
+    {
+        return new ProjectBuilder($this->newApiRequest);
+    }
 
 	/**
 	 * @return UserBuilder()|Builder
@@ -324,8 +345,13 @@ class Economic
 		return $this->request->doRequest('get', $directUrl)->getBody()->getContents();
 	}
 
-	protected function initRequest()
-	{
-		$this->request = new Request($this->agreement, $this->apiSecret, $this->stripNullValues);
-	}
+    protected function initRequest($baseUri = null)
+    {
+        $this->request = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
+    }
+
+    protected function initNewApiRequest($baseUri = null)
+    {
+        $this->newApiRequest = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
+    }
 }
