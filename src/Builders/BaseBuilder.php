@@ -187,65 +187,6 @@ class BaseBuilder
         });
     }
 
-    /**
-     * @param array $filters
-     * @param int   $pageSize
-     *
-     * @return \Generator
-     * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
-     * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
-     */
-    public function allWithGenerators($filters = [], $pageSize = 500)
-    {
-        $page = 0;
-        $hasMore = true;
-        $items = collect([]);
-
-        $urlFilters = $this->generateQueryStringFromFilterArray($filters, true);
-
-        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlFilters) {
-            while ($hasMore) {
-
-                $responseData = $this->getRequest($page, $pageSize, $urlFilters);
-
-                $items = $this->parseResponse($responseData, $items);
-
-                if (count($responseData->collection) === 0) {
-                    $hasMore = false;
-
-                    break;
-                }
-
-                foreach ($items as $result){
-                    yield $result;
-                }
-
-                $page++;
-            }
-
-            return $items;
-        });
-    }
-
-    protected function getRequest($page, $pageSize, $urlFilters): \stdClass
-    {
-        $response = $this->request->doRequest('get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}");
-
-        return json_decode($response->getBody()->getContents());
-    }
-
-    public function parseResponse($responseData, \Illuminate\Support\Collection $items): \Illuminate\Support\Collection
-    {
-
-        foreach ($responseData->collection as $item) {
-            $model = new $this->model($this->request, $item);
-
-            $items->push($model);
-        }
-
-        return $items;
-    }
-
 	/**
 	 * @param $data
 	 *
