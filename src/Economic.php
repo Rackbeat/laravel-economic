@@ -6,6 +6,7 @@ use LasseRafn\Economic\Builders\AccountBuilder;
 use LasseRafn\Economic\Builders\AccountingYearBuilder;
 use LasseRafn\Economic\Builders\ArchivedOrderBuilder;
 use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
+use LasseRafn\Economic\Builders\AdditionalLagerDataBuilder;
 use LasseRafn\Economic\Builders\Builder;
 use LasseRafn\Economic\Builders\ContactBuilder;
 use LasseRafn\Economic\Builders\CustomerBuilder;
@@ -310,6 +311,14 @@ class Economic
 	public function draftOrders()
 	{
 		return new DraftOrderBuilder($this->request);
+	}
+
+	/**
+	 * @return AdditionalLagerDataBuilder
+	 */
+	public function additionalLagerData()
+	{
+		return new AdditionalLagerDataBuilder($this->request);
 	}
 
 	/**
