@@ -2,7 +2,7 @@
 
 namespace LasseRafn\Economic\Builders;
 
-class AdditionalLagerDataBuilder extends Builder
+class AdditionalInventoryDataBuilder extends Builder
 {
     protected $entity = 'rackbeat-extradata';
 
