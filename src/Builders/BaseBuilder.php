@@ -22,16 +22,16 @@ use LasseRafn\Economic\Utils\Request;
 
 class BaseBuilder
 {
-    protected $request;
-    protected $entity;
+	protected $request;
+	protected $entity;
 
-    /** @var Model */
-    protected $model;
+	/** @var Model */
+	protected $model;
 
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
+	public function __construct( Request $request )
+	{
+		$this->request = $request;
+	}
 
 	/**
 	 * @param $id
@@ -40,40 +40,41 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function find($id)
-    {
-        return $this->request->handleWithExceptions(function () use ($id) {
-            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}/{$id}");
+	public function find( $id )
+	{
+		return $this->request->handleWithExceptions( function () use ( $id ) {
+			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}/{$id}" );
 
-            $responseData = json_decode($response->getBody()->getContents());
-		
-            $response->getBody()->close();
-            return new $this->model($this->request, $responseData);
-        });
-    }
+			$responseData = $response->throw()->json();
+
+			$response->close();
+
+			return new $this->model( $this->request, $responseData );
+		} );
+	}
 
 	/**
 	 * @return Model
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function first()
-    {
-        return $this->request->handleWithExceptions(function () {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1");
+	public function first()
+	{
+		return $this->request->handleWithExceptions( function () {
+			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1" );
 
-            $responseData = json_decode($response->getBody()->getContents());
-            $fetchedItems = $responseData->collection;
-		
-            $response->getBody()->close();
+			$responseData = $response->throw()->json();
+			$fetchedItems = $responseData->collection;
 
-            if (count($fetchedItems) === 0) {
-                return;
-            }
+			$response->close();
 
-            return new $this->model($this->request, $fetchedItems[0]);
-        });
-    }
+			if ( count( $fetchedItems ) === 0 ) {
+				return;
+			}
+
+			return new $this->model( $this->request, $fetchedItems[0] );
+		} );
+	}
 
 	/**
 	 * @param array $filters
@@ -82,30 +83,30 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function get($filters = [])
-    {
-	    $urlFilters = $this->generateQueryStringFromFilterArray($filters);
+	public function get( $filters = [] )
+	{
+		$urlFilters = $this->generateQueryStringFromFilterArray( $filters );
 
-        return $this->request->handleWithExceptions(function () use ($urlFilters) {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}{$urlFilters}");
+		return $this->request->handleWithExceptions( function () use ( $urlFilters ) {
+			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}{$urlFilters}" );
 
-            $responseData = json_decode($response->getBody()->getContents());
+			$responseData = $response->throw()->json();
 
-            $fetchedItems = $responseData->collection;
+			$fetchedItems = $responseData->collection;
 
-            $items = collect([]);
-            foreach ($fetchedItems as $item) {
-                /** @var Model $model */
-                $model = new $this->model($this->request, $item);
+			$items = collect( [] );
+			foreach ( $fetchedItems as $item ) {
+				/** @var Model $model */
+				$model = new $this->model( $this->request, $item );
 
-                $items->push($model);
-            }
-		
-            $response->getBody()->close();
+				$items->push( $model );
+			}
 
-            return $items;
-        });
-    }
+			$response->close();
+
+			return $items;
+		} );
+	}
 
 	/**
 	 * @param int   $page
@@ -116,30 +117,30 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function getByPage($page = 0, $pageSize = 500, $filters = [])
-    {
-        $items = collect([]);
+	public function getByPage( $page = 0, $pageSize = 500, $filters = [] )
+	{
+		$items = collect( [] );
 
-        $urlFilters = $this->generateQueryStringFromFilterArray($filters, true);
+		$urlFilters = $this->generateQueryStringFromFilterArray( $filters, true );
 
-        return $this->request->handleWithExceptions(function () use ($pageSize, &$page, &$items, $urlFilters) {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}");
+		return $this->request->handleWithExceptions( function () use ( $pageSize, &$page, &$items, $urlFilters ) {
+			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}" );
 
-            $responseData = json_decode($response->getBody()->getContents());
-            $fetchedItems = $responseData->collection;
+			$responseData = $response->throw()->json();
+			$fetchedItems = $responseData->collection;
 
-            foreach ($fetchedItems as $item) {
-                /** @var Model $model */
-                $model = new $this->model($this->request, $item);
+			foreach ( $fetchedItems as $item ) {
+				/** @var Model $model */
+				$model = new $this->model( $this->request, $item );
 
-                $items->push($model);
-            }
-		
-            $response->getBody()->close();
+				$items->push( $model );
+			}
 
-            return $items;
-        });
-    }
+			$response->close();
+
+			return $items;
+		} );
+	}
 
 	/**
 	 * @param array $filters
@@ -149,43 +150,43 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function all($filters = [], $pageSize = 100)
-    {
-        $page = 0;
-        $pagesize = $pageSize;
-        $hasMore = true;
-        $items = collect([]);
+	public function all( $filters = [], $pageSize = 100 )
+	{
+		$page     = 0;
+		$pagesize = $pageSize;
+		$hasMore  = true;
+		$items    = collect( [] );
 
-	    $urlFilters = $this->generateQueryStringFromFilterArray($filters, true);
+		$urlFilters = $this->generateQueryStringFromFilterArray( $filters, true );
 
-        return $this->request->handleWithExceptions(function () use (&$hasMore, $pagesize, &$page, &$items, $urlFilters) {
-            while ($hasMore) {
-	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pagesize}{$urlFilters}");
-                $responseData = json_decode($response->getBody()->getContents());
-                
-                $fetchedItems = empty($this->rest_version) ? $responseData->collection : $responseData;
-		    
-            	$response->getBody()->close();
+		return $this->request->handleWithExceptions( function () use ( &$hasMore, $pagesize, &$page, &$items, $urlFilters ) {
+			while ( $hasMore ) {
+				$response     = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pagesize}{$urlFilters}" );
+				$responseData = $response->throw()->json();
 
-                if (count($fetchedItems) === 0) {
-                    $hasMore = false;
+				$fetchedItems = empty( $this->rest_version ) ? $responseData->collection : $responseData;
 
-                    break;
-                }
+				$response->close();
 
-                foreach ($fetchedItems as $item) {
-                    /** @var Model $model */
-                    $model = new $this->model($this->request, $item);
+				if ( count( $fetchedItems ) === 0 ) {
+					$hasMore = false;
 
-                    $items->push($model);
-                }
+					break;
+				}
 
-                $page++;
-            }
+				foreach ( $fetchedItems as $item ) {
+					/** @var Model $model */
+					$model = new $this->model( $this->request, $item );
 
-            return $items;
-        });
-    }
+					$items->push( $model );
+				}
+
+				$page++;
+			}
+
+			return $items;
+		} );
+	}
 
 	/**
 	 * @param $data
@@ -194,22 +195,22 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function create($data)
-    {
-    	$data = $this->request->formatData($data);
+	public function create( $data )
+	{
+		$data = $this->request->formatData( $data );
 
-        return $this->request->handleWithExceptions(function () use ($data) {
-	        $response = $this->request->doRequest('post', "{$this->rest_version}/{$this->entity}",[
-		        'json' => $data,
-	        ]);
+		return $this->request->handleWithExceptions( function () use ( $data ) {
+			$response = $this->request->doRequest( 'post', "{$this->rest_version}/{$this->entity}", [
+				'json' => $data,
+			] );
 
-            $responseData = json_decode($response->getBody()->getContents());
-		    
-            	$response->getBody()->close();
+			$responseData = $response->throw()->json();
 
-            return new $this->model($this->request, $responseData);
-        });
-    }
+			$response->close();
+
+			return new $this->model( $this->request, $responseData );
+		} );
+	}
 
 	/**
 	 * @param string $operator
@@ -218,114 +219,114 @@ class BaseBuilder
 	 *
 	 * @throws OperatorNotFound
 	 */
-    protected function getOperator($operator)
-    {
-	    switch (\mb_strtolower($operator)) {
-		    case '=':
-		    case '==':
-		    case '===':
-		     return new EqualsOperator;
-		    case '!=':
-		    case '!==':
-		        return new NotEqualsOperator;
-		    case '>':
-			    return new GreaterThanOperator;
-		    case '>=':
-			    return new GreaterThanOrEqualOperator;
-		    case '<':
-			    return new LessThanOperator;
-		    case '<=':
-			    return new LessThanOrEqualOperator;
-		    case 'like':
-			    return new LikeOperator;
-		    case 'in':
-			    return new InOperator;
-		    case '!in':
-		    case 'not in':
-			    return new NotInOperator;
-		    case 'or':
-		    case 'or else':
+	protected function getOperator( $operator )
+	{
+		switch ( \mb_strtolower( $operator ) ) {
+			case '=':
+			case '==':
+			case '===':
+				return new EqualsOperator;
+			case '!=':
+			case '!==':
+				return new NotEqualsOperator;
+			case '>':
+				return new GreaterThanOperator;
+			case '>=':
+				return new GreaterThanOrEqualOperator;
+			case '<':
+				return new LessThanOperator;
+			case '<=':
+				return new LessThanOrEqualOperator;
+			case 'like':
+				return new LikeOperator;
+			case 'in':
+				return new InOperator;
+			case '!in':
+			case 'not in':
+				return new NotInOperator;
+			case 'or':
+			case 'or else':
 				return new OrOperator;
-		    case 'and':
-			    return new AndOperator;
-		    case 'null':
-			    return new NullOperator;
-		    default:
-			    throw new OperatorNotFound($operator);
-	    }
-    }
+			case 'and':
+				return new AndOperator;
+			case 'null':
+				return new NullOperator;
+			default:
+				throw new OperatorNotFound( $operator );
+		}
+	}
 
-    protected function generateQueryStringFromFilterArray($filters, $and = false)
-    {
-	    if (\count($filters) === 0) {
-	    	return '';
-	    }
+	protected function generateQueryStringFromFilterArray( $filters, $and = false )
+	{
+		if ( \count( $filters ) === 0 ) {
+			return '';
+		}
 
-	    $string = ($and ? '&' : '?') . 'filter=';
+		$string = ( $and ? '&' : '?' ) . 'filter=';
 
-	    $i = 1;
-	    foreach ($filters as $filter) {
-	    	// To support passing in 'and' / 'or' as an individual filter rather than ['', 'and', '']
-	    	if (!\is_array($filter) && \count($filter) === 1) {
-			    $filterOperator = $this->getOperator($filter[0] ?? $filter);
+		$i = 1;
+		foreach ( $filters as $filter ) {
+			// To support passing in 'and' / 'or' as an individual filter rather than ['', 'and', '']
+			if ( ! \is_array( $filter ) && \count( $filter ) === 1 ) {
+				$filterOperator = $this->getOperator( $filter[0] ?? $filter );
 
-			    if (($filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator)) {
-			    	$string.= $filterOperator->queryString;
-			    	$i++;
-			    	continue;
-			    }
-		    }
+				if ( ( $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) ) {
+					$string .= $filterOperator->queryString;
+					$i++;
+					continue;
+				}
+			}
 
-		    $filterOperator = $this->getOperator($filter[1]);
-		    $string .= $filter[0] . $filterOperator->queryString . $this->transformFilterValue($filter[2], $filterOperator);
+			$filterOperator = $this->getOperator( $filter[1] );
+			$string         .= $filter[0] . $filterOperator->queryString . $this->transformFilterValue( $filter[2], $filterOperator );
 
-		    if (!($filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator) && \count($filters) > $i) {
-			    $string .= (new AndOperator)->queryString;
-		    }
+			if ( ! ( $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) && \count( $filters ) > $i ) {
+				$string .= ( new AndOperator )->queryString;
+			}
 
-		    $i++;
-	    }
+			$i++;
+		}
 
-	    return $string;
-    }
+		return $string;
+	}
 
-    protected function transformFilterValue($value, FilterOperatorInterface $filterOperator)
-    {
-    	if($value === null) {
-    	    return (new NullOperator)->queryString;
-	    }
+	protected function transformFilterValue( $value, FilterOperatorInterface $filterOperator )
+	{
+		if ( $value === null ) {
+			return ( new NullOperator )->queryString;
+		}
 
-    	if ($filterOperator instanceof NullOperator || $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) {
-    		return '';
-	    }
+		if ( $filterOperator instanceof NullOperator || $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) {
+			return '';
+		}
 
-	    if ($filterOperator instanceof InOperator && \is_array($value)) {
-		    return '[' . implode(',', $value) . ']';
-	    }
+		if ( $filterOperator instanceof InOperator && \is_array( $value ) ) {
+			return '[' . implode( ',', $value ) . ']';
+		}
 
-	    $escapedStrings = [
-		    '$',
-		    '(',
-		    ')',
-		    '*',
-		    '[',
-		    ']',
-		    ',',
-	    ];
+		$escapedStrings = [
+			'$',
+			'(',
+			')',
+			'*',
+			'[',
+			']',
+			',',
+		];
 
-	    $urlencodedStrings = [
-		    '+',
-		    ' ',
-	    ];
+		$urlencodedStrings = [
+			'+',
+			' ',
+		];
 
-	    foreach ($escapedStrings as $escapedString) {
-		    $value = str_replace($escapedString, '$'.$escapedString, $value);
-	    }
+		foreach ( $escapedStrings as $escapedString ) {
+			$value = str_replace( $escapedString, '$' . $escapedString, $value );
+		}
 
-	    foreach ($urlencodedStrings as $urlencodedString) {
-		    $value = str_replace($urlencodedString, urlencode($urlencodedString), $value);
-	    }
+		foreach ( $urlencodedStrings as $urlencodedString ) {
+			$value = str_replace( $urlencodedString, urlencode( $urlencodedString ), $value );
+		}
 
-	    return $value;
-    }
+		return $value;
+	}
 }
