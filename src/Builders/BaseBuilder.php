@@ -54,7 +54,7 @@ class BaseBuilder
 	}
 
 	/**
-	 * @return Model
+	 * @return null|Model
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
@@ -63,13 +63,12 @@ class BaseBuilder
 		return $this->request->handleWithExceptions( function () {
 			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1" );
 
-			$responseData = $response->throw()->json();
-			$fetchedItems = $responseData->collection;
+			$fetchedItems = $response->throw()->json('collection');
 
 			$response->close();
 
 			if ( count( $fetchedItems ) === 0 ) {
-				return;
+				return null;
 			}
 
 			return new $this->model( $this->request, $fetchedItems[0] );
@@ -90,12 +89,8 @@ class BaseBuilder
 		return $this->request->handleWithExceptions( function () use ( $urlFilters ) {
 			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}{$urlFilters}" );
 
-			$responseData = $response->throw()->json();
-
-			$fetchedItems = $responseData->collection;
-
 			$items = collect( [] );
-			foreach ( $fetchedItems as $item ) {
+			foreach ( $response->throw()->json('collection') as $item ) {
 				/** @var Model $model */
 				$model = new $this->model( $this->request, $item );
 
@@ -126,10 +121,7 @@ class BaseBuilder
 		return $this->request->handleWithExceptions( function () use ( $pageSize, &$page, &$items, $urlFilters ) {
 			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}" );
 
-			$responseData = $response->throw()->json();
-			$fetchedItems = $responseData->collection;
-
-			foreach ( $fetchedItems as $item ) {
+			foreach ( $response->throw()->json('collection') as $item ) {
 				/** @var Model $model */
 				$model = new $this->model( $this->request, $item );
 
@@ -162,9 +154,9 @@ class BaseBuilder
 		return $this->request->handleWithExceptions( function () use ( &$hasMore, $pagesize, &$page, &$items, $urlFilters ) {
 			while ( $hasMore ) {
 				$response     = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pagesize}{$urlFilters}" );
-				$responseData = $response->throw()->json();
+				$response->throw();
 
-				$fetchedItems = empty( $this->rest_version ) ? $responseData->collection : $responseData;
+				$fetchedItems = empty( $this->rest_version ) ? $response->json('collection') : $response->json();
 
 				$response->close();
 
