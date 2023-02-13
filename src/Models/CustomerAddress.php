@@ -20,14 +20,14 @@ class CustomerAddress extends Model
         'termsOfDelivery'
     ];
 
-    public $customerContactNumber;
-    public $self;
-    public $phone;
-    public $email;
-    public $name;
-    public $eInvoiceId;
-    public $emailNotifications;
-    public $notes;
+    public $address;
+    public $barred;
+    public $city;
+    public $country;
+    public $customerNumber;
+    public $deliveryLocationNumber;
+    public $postalCode;
+    public $termsOfDelivery;
 
     /** @var Customer $customer */
     public $customer;
