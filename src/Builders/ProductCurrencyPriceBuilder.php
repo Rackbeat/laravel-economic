@@ -7,7 +7,7 @@ use LasseRafn\Economic\Utils\Request;
 
 class ProductCurrencyPriceBuilder extends Builder
 {
-    protected $entity = '/products/:productNumber/pricing/currency-specific-sales-prices';
+    protected $entity = 'products/:productNumber/pricing/currency-specific-sales-prices';
     protected $model = ProductCurrencyPrice::class;
 
     public function __construct(Request $request, $productNumber)
