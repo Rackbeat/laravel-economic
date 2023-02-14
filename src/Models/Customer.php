@@ -58,6 +58,7 @@ class Customer extends Model
     public $totals;
     public $website;
     public $deliveryLocations;
+    public $defaultDeliveryLocation;
     public $invoices;
     public $self;
     public $email;
@@ -91,6 +92,15 @@ class Customer extends Model
     {
         return new CustomerAddressBuilder($this->request, $this->customerNumber);
     }
+
+    /**
+     * @return Model
+     */
+    public function defaultAddress()
+    {
+        return $this->addresses()->find($this->defaultDeliveryLocation);
+    }
+
 
     public function invoiceTemplates()
     {

@@ -8,7 +8,7 @@ use LasseRafn\Economic\Utils\Request;
 class CustomerAddress extends Model
 {
     protected $entity = 'customers/:customerNumber/delivery-locations';
-    protected $primaryKey = 'customerContactNumber';
+    protected $primaryKey = 'deliveryLocationNumber';
     protected $puttable = [
         'address',
         'barred',
