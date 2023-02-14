@@ -98,7 +98,13 @@ class Customer extends Model
      */
     public function defaultAddress()
     {
-        return $this->defaultDeliveryLocation !== null ? $this->addresses()->find($this->defaultDeliveryLocation->deliveryLocationNumber) : null;
+        if($this->defaultDeliveryLocation !== null) {
+            try {
+                return $this->addresses()->find($this->defaultDeliveryLocation->deliveryLocationNumber);
+            } catch (\Exception $exception) {
+            }
+        }
+        return null;
     }
 
 
