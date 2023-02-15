@@ -19,9 +19,9 @@ class ProductCurrencyPriceBuilder extends Builder
         parent::__construct($request);
     }
 
-    public function valid(ProductCurrencyPriceBuilder $builder)
+    public function valid()
     {
-        return $builder->all([])->filter(function ($currency) {
+        return $this->all([])->filter(function ($currency) {
             return in_array($currency->currency->code, self::VALID_CURRENCIES);
         })->values();
     }
