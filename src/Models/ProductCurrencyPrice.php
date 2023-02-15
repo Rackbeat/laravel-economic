@@ -6,7 +6,7 @@ use LasseRafn\Economic\Utils\Model;
 
 class ProductCurrencyPrice extends Model
 {
-    protected $entity = '/products/:productNumber/pricing/currency-specific-sales-prices';
+    protected $entity = 'products/:productNumber/pricing/currency-specific-sales-prices';
     protected $primaryKey = 'code';
 
     public $currency;
