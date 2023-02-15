@@ -365,4 +365,24 @@ class Economic
     {
         $this->newApiRequest = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
     }
+
+    public function getOrderLines(int $orderNumber, Model $entity): ?array
+    {
+        $order = null;
+        $lines = null;
+
+        if(str_contains(get_class($entity), 'SentOrder'))
+            $order = $this->sentOrders()->find($orderNumber);
+        if (str_contains(get_class($entity), 'DraftOrder'))
+            $order = $this->draftOrders()->find($orderNumber);
+
+        if (!is_null($order)){
+            $lines = $order->lines;
+        }
+        if (!\is_array($lines)) {
+            $lines = [$lines];
+        }
+
+        return $lines;
+    }
 }
