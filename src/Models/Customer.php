@@ -3,6 +3,7 @@
 namespace LasseRafn\Economic\Models;
 
 use LasseRafn\Economic\Builders\ContactBuilder;
+use LasseRafn\Economic\Builders\CustomerAddressBuilder;
 use LasseRafn\Economic\Builders\InvoiceTemplateBuilder;
 use LasseRafn\Economic\Utils\Model;
 
@@ -57,6 +58,7 @@ class Customer extends Model
     public $totals;
     public $website;
     public $deliveryLocations;
+    public $defaultDeliveryLocation;
     public $invoices;
     public $self;
     public $email;
@@ -82,6 +84,29 @@ class Customer extends Model
     {
         return new ContactBuilder($this->request, $this->customerNumber);
     }
+
+    /**
+     * @return CustomerAddressBuilder
+     */
+    public function addresses()
+    {
+        return new CustomerAddressBuilder($this->request, $this->customerNumber);
+    }
+
+    /**
+     * @return Model
+     */
+    public function defaultAddress()
+    {
+        if($this->defaultDeliveryLocation !== null) {
+            try {
+                return $this->addresses()->find($this->defaultDeliveryLocation->deliveryLocationNumber);
+            } catch (\Exception $exception) {
+            }
+        }
+        return null;
+    }
+
 
     public function invoiceTemplates()
     {

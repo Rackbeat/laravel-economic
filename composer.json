@@ -16,12 +16,18 @@
         "artisaninweb/laravel-soap": "^0.3"
     },
     "require-dev": {
+        "orchestra/testbench": "^6.9"
     },
     "autoload": {
         "psr-4": {
             "LasseRafn\\Economic\\": "src"
         }
     },
+      "autoload-dev": {
+        "psr-4": {
+          "Tests\\": "tests/"
+        }
+      },
     "extra":{
         "laravel":{
            "providers":[
