@@ -9,6 +9,7 @@ use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
 use LasseRafn\Economic\Builders\AdditionalInventoryDataBuilder;
 use LasseRafn\Economic\Builders\Builder;
 use LasseRafn\Economic\Builders\ContactBuilder;
+use LasseRafn\Economic\Builders\CustomerAddressBuilder;
 use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
 use LasseRafn\Economic\Builders\DraftInvoiceBuilder;
@@ -182,6 +183,16 @@ class Economic
 	{
 		return new ContactBuilder($this->request, $customerNumber);
 	}
+
+    /**
+     * @param integer $customerNumber
+     *
+     * @return CustomerAddressBuilder()|Builder
+     */
+    public function customerAddresses($customerNumber)
+    {
+        return new CustomerAddressBuilder($this->request, $customerNumber);
+    }
 
 	/**
 	 * @return VatZoneBuilder|Builder
@@ -362,25 +373,5 @@ class Economic
     protected function initNewApiRequest($baseUri = null)
     {
         $this->newApiRequest = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
-    }
-
-    public function getOrderLines(int $orderNumber, Model $entity): ?array
-    {
-        $order = null;
-        $lines = null;
-
-        if(str_contains(get_class($entity), 'SentOrder'))
-            $order = $this->sentOrders()->find($orderNumber);
-        if (str_contains(get_class($entity), 'DraftOrder'))
-            $order = $this->draftOrders()->find($orderNumber);
-
-        if (!is_null($order)){
-            $lines = $order->lines;
-        }
-        if (!\is_array($lines)) {
-            $lines = [$lines];
-        }
-
-        return $lines;
     }
 }
