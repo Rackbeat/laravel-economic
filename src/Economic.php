@@ -351,6 +351,27 @@ class Economic
 		return new VoucherBuilder($this->request, $year);
 	}
 
+
+    public function getOrderLines(int $orderNumber, Model $entity): ?array
+    {
+        $order = null;
+        $lines = null;
+
+        if(str_contains(get_class($entity), 'SentOrder'))
+            $order = $this->sentOrders()->find($orderNumber);
+        if (str_contains(get_class($entity), 'DraftOrder'))
+            $order = $this->draftOrders()->find($orderNumber);
+
+        if (!is_null($order)){
+            $lines = $order->lines;
+        }
+        if (!\is_array($lines)) {
+            $lines = [$lines];
+        }
+
+        return $lines;
+    }
+
 	public function downloadInvoice($directUrl)
 	{
 		return $this->request->doRequest('get', $directUrl)->getBody()->getContents();
