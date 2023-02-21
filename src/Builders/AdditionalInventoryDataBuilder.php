@@ -2,6 +2,8 @@
 
 namespace LasseRafn\Economic\Builders;
 
+use LasseRafn\Economic\Services\QueryGeneratorService;
+
 class AdditionalInventoryDataBuilder extends Builder
 {
     protected $entity = 'rackbeat-extradata';
@@ -15,7 +17,7 @@ class AdditionalInventoryDataBuilder extends Builder
      */
     public function get($filters = [])
     {
-        $urlFilters = $this->generateQueryStringFromFilterArray($filters);
+        $urlFilters = QueryGeneratorService::generateQuery($filters);
 
         return $this->request->handleWithExceptions(function () use ($urlFilters) {
             $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}{$urlFilters}");
