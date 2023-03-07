@@ -51,4 +51,5 @@ class SentOrder extends Model
     public $soap;
     public $notes;
     public $lines;
+    public $references;
 }
