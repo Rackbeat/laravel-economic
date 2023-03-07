@@ -41,6 +41,7 @@ class DraftOrder extends Model
     public $project;
     public $grossAmount;
     public $netAmount;
+    public $references;
 
     /** @var object */
     public $soap;
