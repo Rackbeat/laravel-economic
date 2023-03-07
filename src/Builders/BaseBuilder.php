@@ -69,9 +69,9 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function get($filters = [])
+    public function get($filters = [], $sorting = [])
     {
-	    $urlQuery = QueryGeneratorService::generateQuery($filters);
+	    $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting = []);
 
         return $this->request->handleWithExceptions(function () use ($urlQuery) {
 	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}{$urlQuery}");

@@ -15,7 +15,7 @@ class AdditionalInventoryDataBuilder extends Builder
      * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
      * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
      */
-    public function get($filters = [])
+    public function get($filters = [], $sorting = [])
     {
         $urlFilters = QueryGeneratorService::generateQuery($filters);
 
