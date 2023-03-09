@@ -40,14 +40,44 @@ class BaseBuilder
     }
 
 	/**
-	 * @return Model
+	 * @return Model|void
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function first()
+    public function first($sortByField = null)
+    {
+        return $this->request->handleWithExceptions(function () use($sortByField) {
+		$url = "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1";
+		
+		if($sortByField) {
+			$url .= "&sort={$sortByField}";
+		}
+		
+	        $response = $this->request->doRequest('get', $url);
+
+            $responseData = json_decode($response->getBody()->getContents());
+            $fetchedItems = $responseData->collection;
+		
+            $response->getBody()->close();
+
+            if (count($fetchedItems) === 0) {
+                return;
+            }
+
+            return new $this->model($this->request, $fetchedItems[0]);
+        });
+    }
+    
+    
+	/**
+	 * @return Model|void
+	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
+	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
+	 */
+    public function last($sortByField)
     {
         return $this->request->handleWithExceptions(function () {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1");
+	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort=-{$sortByField}");
 
             $responseData = json_decode($response->getBody()->getContents());
             $fetchedItems = $responseData->collection;
