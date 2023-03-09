@@ -366,10 +366,13 @@ class Economic
         $order = null;
         $lines = null;
 
-        if(str_contains(get_class($entity), 'SentOrder'))
+        if(str_contains(get_class($entity), 'SentOrder')) {
             $order = $this->sentOrders()->find($orderNumber);
-        if (str_contains(get_class($entity), 'DraftOrder'))
+	} else if (str_contains(get_class($entity), 'DraftOrder')) {
             $order = $this->draftOrders()->find($orderNumber);
+	} else if (str_contains(get_class($entity), 'ArchivedOrder')) {
+            $order = $this->archivedOrders()->find($orderNumber);
+	}
 
         if (!is_null($order)){
             $lines = $order->lines;
