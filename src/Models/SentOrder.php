@@ -8,7 +8,7 @@ class SentOrder extends Model
 {
     public    $orderNumber;
     public    $name;
-    protected $entity     = ' /orders/sent';
+    protected $entity     = 'orders/sent';
     protected $primaryKey = 'orderNumber';
 
     protected $puttable = [
