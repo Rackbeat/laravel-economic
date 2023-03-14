@@ -214,7 +214,7 @@ class BaseBuilder
 
         $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting, true);
 
-        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlQuery) {
+        $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlQuery) {
             while ($hasMore) {
 
                 $responseData = $this->getRequest($page, $pageSize, $urlQuery);
