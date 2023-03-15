@@ -54,11 +54,6 @@ class Model
 		return $data;
 	}
 
-    public function toCollection()
-    {
-        return json_decode(json_encode($this->toArray()));
-    }
-
 	/**
 	 * Returns an array of data that will be used for PUT/update requests towards this model.
 	 *
@@ -82,6 +77,11 @@ class Model
 	{
 		$this->{$attribute} = $value;
 	}
+
+    public function setRequest(?Request $request): void
+    {
+        $this->request = $request;
+    }
 
 	public function delete()
 	{
