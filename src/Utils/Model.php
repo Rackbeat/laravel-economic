@@ -54,6 +54,11 @@ class Model
 		return $data;
 	}
 
+    public function toCollection()
+    {
+        return json_decode(json_encode($this->toArray()));
+    }
+
 	/**
 	 * Returns an array of data that will be used for PUT/update requests towards this model.
 	 *
