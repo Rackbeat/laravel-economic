@@ -6,6 +6,7 @@ use LasseRafn\Economic\Builders\AccountBuilder;
 use LasseRafn\Economic\Builders\AccountingYearBuilder;
 use LasseRafn\Economic\Builders\ArchivedOrderBuilder;
 use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
+use LasseRafn\Economic\Builders\AdditionalInventoryDataBuilder;
 use LasseRafn\Economic\Builders\Builder;
 use LasseRafn\Economic\Builders\ContactBuilder;
 use LasseRafn\Economic\Builders\CustomerAddressBuilder;
@@ -333,6 +334,14 @@ class Economic
 	}
 
 	/**
+	 * @return AdditionalInventoryDataBuilder
+	 */
+	public function additionalInventoryData()
+	{
+		return new AdditionalInventoryDataBuilder($this->request);
+	}
+
+	/**
 	 * @param int|null $year
 	 *
 	 * @return AccountingYearBuilder()|Builder
@@ -359,6 +368,30 @@ class Economic
 
 		return new VoucherBuilder($this->request, $year);
 	}
+
+
+    public function getOrderLines(int $orderNumber, Model $entity): ?array
+    {
+        $order = null;
+        $lines = null;
+
+        if(str_contains(get_class($entity), 'SentOrder')) {
+            $order = $this->sentOrders()->find($orderNumber);
+	} else if (str_contains(get_class($entity), 'DraftOrder')) {
+            $order = $this->draftOrders()->find($orderNumber);
+	} else if (str_contains(get_class($entity), 'ArchivedOrder')) {
+            $order = $this->archivedOrders()->find($orderNumber);
+	}
+
+        if (!is_null($order)){
+            $lines = $order->lines;
+        }
+        if (!\is_array($lines)) {
+            $lines = [$lines];
+        }
+
+        return $lines;
+    }
 
 	public function downloadInvoice($directUrl)
 	{
