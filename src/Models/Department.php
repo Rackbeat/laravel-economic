@@ -11,4 +11,5 @@ class Department extends Model
 
     public $departmentNumber;
     public $name;
+    public $barred;
 }
