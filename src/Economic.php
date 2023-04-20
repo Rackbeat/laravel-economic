@@ -139,7 +139,6 @@ class Economic
 	}
 
 	/**
-	 * This endpoint is experimental.
 	 *
 	 * @return JournalBuilder()|Builder
 	 */
