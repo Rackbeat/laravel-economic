@@ -143,7 +143,7 @@ class Economic
 	 *
 	 * @return JournalBuilder()|Builder
 	 */
-	public function experimentalJournals()
+	public function journals()
 	{
 		return new JournalBuilder($this->request);
 	}
