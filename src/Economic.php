@@ -139,11 +139,10 @@ class Economic
 	}
 
 	/**
-	 * This endpoint is experimental.
 	 *
 	 * @return JournalBuilder()|Builder
 	 */
-	public function experimentalJournals()
+	public function journals()
 	{
 		return new JournalBuilder($this->request);
 	}
