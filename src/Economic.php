@@ -12,6 +12,7 @@ use LasseRafn\Economic\Builders\ContactBuilder;
 use LasseRafn\Economic\Builders\CustomerAddressBuilder;
 use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
+use LasseRafn\Economic\Builders\DepartmentBuilder;
 use LasseRafn\Economic\Builders\DraftInvoiceBuilder;
 use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
@@ -119,6 +120,14 @@ class Economic
 	{
 		return new AccountBuilder($this->request);
 	}
+
+    /**
+     * @return DepartmentBuilder|Builder
+     */
+    public function departments()
+    {
+        return new DepartmentBuilder($this->request);
+    }
 
 	/**
 	 * @return SupplierBuilder()|Builder
