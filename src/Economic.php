@@ -22,6 +22,7 @@ use LasseRafn\Economic\Builders\LayoutBuilder;
 use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
 use LasseRafn\Economic\Builders\ProductBuilder;
+use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
 use LasseRafn\Economic\Builders\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\ProjectBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
@@ -257,6 +258,14 @@ class Economic
 	{
 		return new ProductGroupBuilder($this->request);
 	}
+
+    /**
+     * @return ProductCurrencyPriceBuilder()|Builder
+     */
+    public function productCurrencyPrices($productNumber)
+    {
+        return new ProductCurrencyPriceBuilder($this->request, $productNumber);
+    }
 
 	/**
 	 * @return UnitBuilder()|Builder
