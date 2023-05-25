@@ -78,6 +78,11 @@ class Model
 		$this->{$attribute} = $value;
 	}
 
+    public function setRequest(?Request $request): void
+    {
+        $this->request = $request;
+    }
+
 	public function delete()
 	{
 		return $this->request->handleWithExceptions(function () {
