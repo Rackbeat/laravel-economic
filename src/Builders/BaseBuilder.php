@@ -139,15 +139,14 @@ class BaseBuilder
     public function all($filters = [], $sorting = [], $pageSize = 100)
     {
         $page = 0;
-        $pagesize = $pageSize;
         $hasMore = true;
         $items = collect([]);
 
 	    $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting, true);
 
-        return $this->request->handleWithExceptions(function () use (&$hasMore, $pagesize, &$page, &$items, $urlQuery) {
+        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$page, &$items, $urlQuery) {
             while ($hasMore) {
-	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pagesize}{$urlQuery}");
+	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
                 $responseData = json_decode($response->getBody()->getContents());
                 
                 $fetchedItems = empty($this->rest_version) ? $responseData->collection : $responseData;
