@@ -153,21 +153,20 @@ class BaseBuilder
 		    
             	$response->getBody()->close();
 
-                // If we got fewer items returned than requested, it means we reached page limit
-                // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
-                // Since e-conomic max pageSize is 1000.
-                if (count($fetchedItems) < min($pageSize, 1000)) {
-                    $hasMore = false;
-
-                    break;
-                }
-
                 foreach ($fetchedItems as $item) {
                     /** @var Model $model */
                     $model = new $this->model($this->request, $item);
 
                     $items->push($model);
                 }
+
+	            // If we got fewer items returned than requested, it means we reached page limit
+	            // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+	            // Since e-conomic max pageSize is 1000.
+	            if (count($fetchedItems) < min($pageSize, 1000)) {
+		            $hasMore = false;
+					break;
+	            }
 
                 $page++;
             }
@@ -222,6 +221,10 @@ class BaseBuilder
 
                 $items = $this->parseResponse($responseData, $items);
 
+	            foreach ($items as $result){
+		            yield $result;
+	            }
+
                 // If we got fewer items returned than requested, it means we reached page limit
                 // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
                 // Since e-conomic max pageSize is 1000.
@@ -229,10 +232,6 @@ class BaseBuilder
                     $hasMore = false;
 
                     break;
-                }
-
-                foreach ($items as $result){
-                    yield $result;
                 }
 
                 $page++;
