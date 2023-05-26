@@ -154,7 +154,10 @@ class BaseBuilder
 		    
             	$response->getBody()->close();
 
-                if (count($fetchedItems) === 0) {
+		// If we got fewer items returned than requested, it means we reached page limit
+		// Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+		// Since e-conomic max pageSize is 1000.
+                if (count($fetchedItems) < min($pageSize, 1000)) {
                     $hasMore = false;
 
                     break;
@@ -216,12 +219,14 @@ class BaseBuilder
 
         return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlQuery) {
             while ($hasMore) {
-
                 $responseData = $this->getRequest($page, $pageSize, $urlQuery);
 
                 $items = $this->parseResponse($responseData, $items);
 
-                if (count($responseData->collection) === 0) {
+		// If we got fewer items returned than requested, it means we reached page limit
+		// Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+		// Since e-conomic max pageSize is 1000.
+                if (count($responseData->collection) < min($pageSize, 1000)) {
                     $hasMore = false;
 
                     break;
