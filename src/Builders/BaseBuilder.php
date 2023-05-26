@@ -154,9 +154,9 @@ class BaseBuilder
 		    
             	$response->getBody()->close();
 
-		// If we got fewer items returned than requested, it means we reached page limit
-		// Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
-		// Since e-conomic max pageSize is 1000.
+                // If we got fewer items returned than requested, it means we reached page limit
+                // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+                // Since e-conomic max pageSize is 1000.
                 if (count($fetchedItems) < min($pageSize, 1000)) {
                     $hasMore = false;
 
@@ -223,9 +223,9 @@ class BaseBuilder
 
                 $items = $this->parseResponse($responseData, $items);
 
-		// If we got fewer items returned than requested, it means we reached page limit
-		// Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
-		// Since e-conomic max pageSize is 1000.
+                // If we got fewer items returned than requested, it means we reached page limit
+                // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+                // Since e-conomic max pageSize is 1000.
                 if (count($responseData->collection) < min($pageSize, 1000)) {
                     $hasMore = false;
 
