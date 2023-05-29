@@ -139,26 +139,19 @@ class BaseBuilder
     public function all($filters = [], $sorting = [], $pageSize = 100)
     {
         $page = 0;
-        $pagesize = $pageSize;
         $hasMore = true;
         $items = collect([]);
 
 	    $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting, true);
 
-        return $this->request->handleWithExceptions(function () use (&$hasMore, $pagesize, &$page, &$items, $urlQuery) {
+        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$page, &$items, $urlQuery) {
             while ($hasMore) {
-	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pagesize}{$urlQuery}");
+	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
                 $responseData = json_decode($response->getBody()->getContents());
                 
                 $fetchedItems = empty($this->rest_version) ? $responseData->collection : $responseData;
 		    
             	$response->getBody()->close();
-
-                if (count($fetchedItems) === 0) {
-                    $hasMore = false;
-
-                    break;
-                }
 
                 foreach ($fetchedItems as $item) {
                     /** @var Model $model */
@@ -166,6 +159,14 @@ class BaseBuilder
 
                     $items->push($model);
                 }
+
+	            // If we got fewer items returned than requested, it means we reached page limit
+	            // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+	            // Since e-conomic max pageSize is 1000.
+	            if (count($fetchedItems) < min($pageSize, 1000)) {
+		            $hasMore = false;
+					break;
+	            }
 
                 $page++;
             }
@@ -216,19 +217,21 @@ class BaseBuilder
 
         return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlQuery) {
             while ($hasMore) {
-
                 $responseData = $this->getRequest($page, $pageSize, $urlQuery);
 
                 $items = $this->parseResponse($responseData, $items);
 
-                if (count($responseData->collection) === 0) {
+	            foreach ($items as $result){
+		            yield $result;
+	            }
+
+                // If we got fewer items returned than requested, it means we reached page limit
+                // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+                // Since e-conomic max pageSize is 1000.
+                if (count($responseData->collection) < min($pageSize, 1000)) {
                     $hasMore = false;
 
                     break;
-                }
-
-                foreach ($items as $result){
-                    yield $result;
                 }
 
                 $page++;
