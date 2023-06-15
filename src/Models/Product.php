@@ -2,6 +2,7 @@
 
 namespace LasseRafn\Economic\Models;
 
+use LasseRafn\Economic\Builders\ProductBuilder;
 use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
 use LasseRafn\Economic\Utils\Model;
 
@@ -50,6 +51,9 @@ class Product extends Model
      */
     public function currencyPrices()
     {
-        return new ProductCurrencyPriceBuilder($this->request, $this->productNumber);
+        return new ProductCurrencyPriceBuilder(
+            $this->request, 
+            (new ProductBuilder($this->request))->encode($this->productNumber)
+        );
     }
 }
