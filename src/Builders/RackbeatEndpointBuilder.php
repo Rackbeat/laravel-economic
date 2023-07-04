@@ -78,8 +78,9 @@ class RackbeatEndpointBuilder
 
     private function sendGetRequest($endpointUri)
     {
-        return Http::retry(3, 500)
-            ->withHeaders([
+        return Http::retry(3, 500, function($exception){
+                return $exception->getCode() >= 500;
+            })->withHeaders([
                 'X-Signature'   => $this->getSignature(),
                 'Content-Type'  => 'application/json',
             ])->get($this->basePath.$endpointUri);
@@ -87,8 +88,9 @@ class RackbeatEndpointBuilder
 
     private function sendPostRequest(string $endpointUri, string $jsonEncodedPayload, array $payload)
     {
-        return Http::retry(3, 500)
-            ->withHeaders([
+        return Http::retry(3, 500, function($exception){
+                return $exception->getCode() >= 500;
+            })->withHeaders([
                 'X-Signature'   => $this->getSignature($jsonEncodedPayload),
                 'Content-Type'  => 'application/json',
             ])->post($this->basePath.$endpointUri, $payload);
