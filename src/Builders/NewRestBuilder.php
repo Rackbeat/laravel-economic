@@ -1,8 +1,6 @@
 <?php
 
-
 namespace LasseRafn\Economic\Builders;
-
 
 class NewRestBuilder extends BaseBuilder
 {
