@@ -366,11 +366,10 @@ class Economic
 	}
 
 	/**
-	 * @param int|null $year
 	 *
 	 * @return AccountingPeriodTotalsBuilder()|Builder
 	 */
-	public function accountingPeriodTotal(int $account, string $year, int $period)
+	public function accountingPeriodTotal($account, $year, $period)
 	{
 		return new AccountingPeriodTotalsBuilder($this->request, $account, $year, $period);
 	}
