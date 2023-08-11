@@ -6,5 +6,5 @@ use LasseRafn\Economic\Utils\Model;
 
 class AccountingPeriodTotals extends Model
 {
-	protected $entity = '';
+	protected $entity = 'accounts/:account/accounting-years/:accountingYear/periods/:periodNumber/totals';
 }
