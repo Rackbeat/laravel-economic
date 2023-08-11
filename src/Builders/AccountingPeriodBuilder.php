@@ -23,10 +23,4 @@ class AccountingPeriodBuilder extends Builder
 
 		parent::__construct($request);
 	}
-
-	public function totals(): AccountingPeriodBuilder
-	{
-		$this->entity .= '/totals';
-		return $this;
-	}
 }
