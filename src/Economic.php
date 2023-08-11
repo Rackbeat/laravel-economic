@@ -355,13 +355,13 @@ class Economic
 	 *
 	 * @return AccountingYearBuilder()|Builder
 	 */
-	public function accountingYear($year = null)
+	public function accountingYear(int $account, $year = null)
 	{
 		if ($year === null) {
 			$year = (int) date('Y');
 		}
 
-		return new AccountingYearBuilder($this->request, $year);
+		return new AccountingYearBuilder($this->request, $account, $year);
 	}
 
 	/**
