@@ -24,9 +24,9 @@ class AccountingPeriodBuilder extends Builder
 		parent::__construct($request);
 	}
 
-	public function toDate(string $date): AccountingPeriodBuilder
+	public function totals(): AccountingPeriodBuilder
 	{
-		$this->entity .= '?filter=toDate$lte:' . $date;
+		$this->entity .= '/totals';
 		return $this;
 	}
 }
