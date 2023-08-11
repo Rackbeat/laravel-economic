@@ -18,8 +18,8 @@ class AccountingYearBuilder extends Builder
 		$this->account = $account;
         $this->year = $year;
 
-	    $this->entity = str_replace(':account', $this->account, $this->entity);
 	    $this->entity = str_replace(':accountingYear', $this->year, $this->entity);
+	    $this->entity = str_replace(':account', $this->account, $this->entity);
 
         parent::__construct($request);
     }
