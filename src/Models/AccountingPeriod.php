@@ -9,9 +9,4 @@ class AccountingPeriod extends Model
 {
 	protected $entity = ' accounts/:account/accounting-years/:accountingYear/periods';
 	protected $primaryKey = 'periodNumber';
-
-	public function totals()
-	{
-		return new AccountingPeriodTotalsBuilder($this->totals);
-	}
 }
