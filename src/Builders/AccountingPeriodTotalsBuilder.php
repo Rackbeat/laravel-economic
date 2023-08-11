@@ -7,7 +7,7 @@ use LasseRafn\Economic\Utils\Request;
 
 class AccountingPeriodTotalsBuilder extends Builder
 {
-	protected $entity = ' accounts/:account/accounting-years/:accountingYear/periods/:period/totals';
+	protected $entity = 'accounts/:account/accounting-years/:accountingYear/periods/:period/totals';
 
 	protected $model = AccountingPeriodTotals::class;
 
