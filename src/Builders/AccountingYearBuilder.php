@@ -7,7 +7,7 @@ use LasseRafn\Economic\Utils\Request;
 
 class AccountingYearBuilder extends Builder
 {
-    protected $entity = '/accounts/:account/accounting-years/:accountingYear';
+    protected $entity = 'accounts/:account/accounting-years/:accountingYear';
     protected $model = AccountingYear::class;
 
     public $year;
