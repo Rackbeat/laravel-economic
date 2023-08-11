@@ -19,4 +19,9 @@ class AccountingPeriodTotalsBuilder extends Builder
 
 		parent::__construct($request);
 	}
+
+	public function getEntity()
+	{
+		return $this->entity;
+	}
 }
