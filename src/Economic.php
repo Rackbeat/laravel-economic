@@ -3,6 +3,7 @@
 namespace LasseRafn\Economic;
 
 use LasseRafn\Economic\Builders\AccountBuilder;
+use LasseRafn\Economic\Builders\AccountingPeriodTotalsBuilder;
 use LasseRafn\Economic\Builders\AccountingYearBuilder;
 use LasseRafn\Economic\Builders\ArchivedOrderBuilder;
 use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
@@ -362,6 +363,16 @@ class Economic
 		}
 
 		return new AccountingYearBuilder($this->request, $account, $year);
+	}
+
+	/**
+	 * @param int|null $year
+	 *
+	 * @return AccountingPeriodTotalsBuilder()|Builder
+	 */
+	public function accountingPeriodTotal(int $account, string $year, int $period)
+	{
+		return new AccountingPeriodTotalsBuilder($this->request, $account, $year, $period);
 	}
 
 	/**
