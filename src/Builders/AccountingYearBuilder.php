@@ -23,4 +23,9 @@ class AccountingYearBuilder extends Builder
 
         parent::__construct($request);
     }
+
+	public function periods(): AccountingPeriodBuilder
+	{
+		return new AccountingPeriodBuilder($this->request, $this->account, $this->year);
+	}
 }
