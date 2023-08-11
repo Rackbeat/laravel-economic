@@ -2,13 +2,14 @@
 
 namespace LasseRafn\Economic\Builders;
 
+use LasseRafn\Economic\Models\AccountingPeriod;
 use LasseRafn\Economic\Models\AccountingYear;
 use LasseRafn\Economic\Utils\Request;
 
 class AccountingPeriodBuilder extends Builder
 {
 	protected $entity = '/accounts/:account/accounting-years/:accountingYear/periods';
-	protected $model = AccountingYear::class;
+	protected $model = AccountingPeriod::class;
 
 	public $year;
 	public $account;
