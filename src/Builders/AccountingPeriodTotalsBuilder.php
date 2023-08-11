@@ -7,7 +7,7 @@ use LasseRafn\Economic\Utils\Request;
 
 class AccountingPeriodTotalsBuilder extends Builder
 {
-	protected $entity = 'accounts/:account/accounting-years/:accountingYear/periods/:period/totals';
+	protected $entity = 'accounts/:account/accounting-years/:accountingYear/periods/:periodNumber/totals';
 
 	protected $model = AccountingPeriodTotals::class;
 
@@ -15,7 +15,7 @@ class AccountingPeriodTotalsBuilder extends Builder
 	{
 		$this->entity = str_replace(':accountingYear', $year, $this->entity);
 		$this->entity = str_replace(':account', $account, $this->entity);
-		$this->entity = str_replace(':period', $period, $this->entity);
+		$this->entity = str_replace(':periodNumber', $period, $this->entity);
 
 		parent::__construct($request);
 	}
