@@ -3,6 +3,8 @@
 namespace LasseRafn\Economic;
 
 use LasseRafn\Economic\Builders\AccountBuilder;
+use LasseRafn\Economic\Builders\AccountingEntryBuilder;
+use LasseRafn\Economic\Builders\AccountingPeriodTotalsBuilder;
 use LasseRafn\Economic\Builders\AccountingYearBuilder;
 use LasseRafn\Economic\Builders\ArchivedOrderBuilder;
 use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
@@ -354,13 +356,31 @@ class Economic
 	 *
 	 * @return AccountingYearBuilder()|Builder
 	 */
-	public function accountingYear($year = null)
+	public function accountingYear(int $account, $year = null)
 	{
 		if ($year === null) {
 			$year = (int) date('Y');
 		}
 
-		return new AccountingYearBuilder($this->request, $year);
+		return new AccountingYearBuilder($this->request, $account, $year);
+	}
+
+	/**
+	 *
+	 * @return AccountingPeriodTotalsBuilder()|Builder
+	 */
+	public function accountingPeriodTotal($account, $year, $period)
+	{
+		return new AccountingPeriodTotalsBuilder($this->request, $account, $year, $period);
+	}
+
+	/**
+	 *
+	 * @return AccountingEntryBuilder()|Builder
+	 */
+	public function accountingEntries($account, $year, $period)
+	{
+		return new AccountingEntryBuilder($this->request, $account, $year, $period);
 	}
 
 	/**
