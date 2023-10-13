@@ -17,6 +17,7 @@ class Project extends Model
 
     public $number;
     public $name;
+	public $description;
     public $self;
 
 }
