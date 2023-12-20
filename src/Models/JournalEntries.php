@@ -17,8 +17,10 @@ class JournalEntries extends \LasseRafn\Economic\Utils\Model
 
     public function __construct(Request $request, $data)
     {
-        if ($data){
-            $this->entity = str_replace(':journalNumber', $data->journal->journalNumber, $this->entity);
+        if ($data && is_array($data)){
+            $data = $data[0];
+            $this->journalNumber = $data->journal->journalNumber;
+            $this->entity = str_replace(':journalNumber', $this->journalNumber, $this->entity);
         }
 
         parent::__construct($request, $data);
