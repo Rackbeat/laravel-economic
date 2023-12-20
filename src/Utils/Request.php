@@ -15,18 +15,26 @@ class Request
 
 	public $beforeRequestHooks = [];
 
-	public function __construct($agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null)
+	public function __construct($agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null, $contentType = 'application/json')
 	{
-		$this->curl = new Client([
-			'base_uri'        => $baseUri ?? config('economic.request_endpoint'),
-			'headers'         => [
-				'X-AppSecretToken'      => $apiSecret,
-				'X-AgreementGrantToken' => $agreementToken,
-				'Content-Type'          => 'application/json',
+		
+		$data = [
+            'base_uri'        => $baseUri ?? config('economic.request_endpoint'),
+            'headers'         => [
+                'X-AppSecretToken'      => $apiSecret,
+                'X-AgreementGrantToken' => $agreementToken,
+                'Content-Type'          => $contentType,
 			],
-			'allow_redirects' => ['strict' => true],
-		]);
+            'allow_redirects' => ['strict' => true],
 
+
+        ];
+		
+        if ($contentType === 'multipart/form-data'){
+            $data["mimeType"] = "multipart/form-data";
+            }
+
+        $this->curl = new Client($data);
 		$this->stripNull = $stripNull;
 	}
 
