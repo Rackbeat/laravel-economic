@@ -13,10 +13,18 @@ class Project extends Model
     protected $puttable = [
         'name',
         'number',
+	    'description',
+	    'isBarred',
+	    'isMainProject',
+	    'projectGroupNumber'
     ];
 
     public $number;
     public $name;
+	public $description;
+	public $isBarred;
+	public $isMainProject;
+	public $projectGroupNumber;
     public $self;
 
 }
