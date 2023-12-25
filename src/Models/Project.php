@@ -16,7 +16,8 @@ class Project extends Model
 	    'description',
 	    'isBarred',
 	    'isMainProject',
-	    'projectGroupNumber'
+	    'projectGroupNumber',
+	    'mainProjectNumber',
     ];
 
     public $number;
@@ -25,6 +26,7 @@ class Project extends Model
 	public $isBarred;
 	public $isMainProject;
 	public $projectGroupNumber;
+	public $mainProjectNumber;
     public $self;
 
 }
