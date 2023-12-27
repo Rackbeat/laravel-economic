@@ -18,7 +18,9 @@ class JournalVouchers extends Model
     public function __construct(Request $request, $data)
     {
         if ($data){
-            $this->entity = str_replace(':journalNumber', $data[0]->journal->journalNumber, $this->entity);
+            $data = $data[0];
+            $this->journalNumber = $data->journal->journalNumber;
+            $this->entity = str_replace(':journalNumber', $this->journalNumber, $this->entity);
         }
 
         parent::__construct($request, $data);
