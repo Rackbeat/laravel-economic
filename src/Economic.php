@@ -20,6 +20,8 @@ use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
 use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
 use LasseRafn\Economic\Builders\JournalBuilder;
+use LasseRafn\Economic\Builders\JournalEntriesBuilder;
+use LasseRafn\Economic\Builders\JournalVouchersBuilder;
 use LasseRafn\Economic\Builders\LayoutBuilder;
 use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
@@ -434,5 +436,22 @@ class Economic
     protected function initNewApiRequest($baseUri = null)
     {
         $this->newApiRequest = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
+    }
+
+
+    /**
+     * @return JournalVouchersBuilder
+     */
+    public function journalVouchers($journalNumber)
+    {
+        return new JournalVouchersBuilder($this->request, $journalNumber);
+    }
+
+    /**
+     * @return JournalEntriesBuilder
+     */
+    public function journalEntries($journalNumber)
+    {
+        return new JournalEntriesBuilder($this->request, $journalNumber);
     }
 }
