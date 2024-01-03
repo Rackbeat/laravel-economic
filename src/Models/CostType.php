@@ -8,6 +8,7 @@ class CostType extends Model
 {
 	protected $entity = 'costtypes';
 	protected $primaryKey = 'number';
+	protected $rest_version = '/api/v16.0.0';
 	protected $puttable = [
 		'costGroupNumber',
 		'name',
