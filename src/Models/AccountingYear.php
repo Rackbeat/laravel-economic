@@ -6,7 +6,7 @@ use LasseRafn\Economic\Utils\Model;
 
 class AccountingYear extends Model
 {
-    protected $entity = ' /accounting-years/:accountingYear';
+    protected $entity = 'accounts/:account/accounting-years/:accountingYear';
     protected $primaryKey = 'accountingYear';
 
     public $attachment;

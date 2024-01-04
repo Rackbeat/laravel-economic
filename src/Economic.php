@@ -3,6 +3,8 @@
 namespace LasseRafn\Economic;
 
 use LasseRafn\Economic\Builders\AccountBuilder;
+use LasseRafn\Economic\Builders\AccountingEntryBuilder;
+use LasseRafn\Economic\Builders\AccountingPeriodTotalsBuilder;
 use LasseRafn\Economic\Builders\AccountingYearBuilder;
 use LasseRafn\Economic\Builders\ArchivedOrderBuilder;
 use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
@@ -20,6 +22,8 @@ use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
 use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
 use LasseRafn\Economic\Builders\JournalBuilder;
+use LasseRafn\Economic\Builders\JournalEntriesBuilder;
+use LasseRafn\Economic\Builders\JournalVouchersBuilder;
 use LasseRafn\Economic\Builders\LayoutBuilder;
 use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
@@ -372,13 +376,31 @@ class Economic
 	 *
 	 * @return AccountingYearBuilder()|Builder
 	 */
-	public function accountingYear($year = null)
+	public function accountingYear(int $account, $year = null)
 	{
 		if ($year === null) {
 			$year = (int) date('Y');
 		}
 
-		return new AccountingYearBuilder($this->request, $year);
+		return new AccountingYearBuilder($this->request, $account, $year);
+	}
+
+	/**
+	 *
+	 * @return AccountingPeriodTotalsBuilder()|Builder
+	 */
+	public function accountingPeriodTotal($account, $year, $period)
+	{
+		return new AccountingPeriodTotalsBuilder($this->request, $account, $year, $period);
+	}
+
+	/**
+	 *
+	 * @return AccountingEntryBuilder()|Builder
+	 */
+	public function accountingEntries($account, $year, $period)
+	{
+		return new AccountingEntryBuilder($this->request, $account, $year, $period);
 	}
 
 	/**
@@ -432,5 +454,22 @@ class Economic
     protected function initNewApiRequest($baseUri = null)
     {
         $this->newApiRequest = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
+    }
+
+
+    /**
+     * @return JournalVouchersBuilder
+     */
+    public function journalVouchers($journalNumber)
+    {
+        return new JournalVouchersBuilder($this->request, $journalNumber);
+    }
+
+    /**
+     * @return JournalEntriesBuilder
+     */
+    public function journalEntries($journalNumber)
+    {
+        return new JournalEntriesBuilder($this->request, $journalNumber);
     }
 }
