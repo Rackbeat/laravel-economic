@@ -11,6 +11,8 @@ use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
 use LasseRafn\Economic\Builders\AdditionalInventoryDataBuilder;
 use LasseRafn\Economic\Builders\Builder;
 use LasseRafn\Economic\Builders\ContactBuilder;
+use LasseRafn\Economic\Builders\CostTypeBuilder;
+use LasseRafn\Economic\Builders\CostTypeGroupBuilder;
 use LasseRafn\Economic\Builders\CustomerAddressBuilder;
 use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
@@ -302,6 +304,22 @@ class Economic
     {
         return new ProjectBuilder($this->newApiRequest);
     }
+
+	/**
+	 * @return CostTypeBuilder()|Builder
+	 */
+	public function cost_types()
+	{
+		return new CostTypeBuilder($this->newApiRequest);
+	}
+
+	/**
+	 * @return CostTypeGroupBuilder()|Builder
+	 */
+	public function cost_type_groups()
+	{
+		return new CostTypeGroupBuilder($this->newApiRequest);
+	}
 
 	/**
 	 * @return UserBuilder()|Builder
