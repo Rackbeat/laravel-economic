@@ -11,6 +11,8 @@ use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
 use LasseRafn\Economic\Builders\AdditionalInventoryDataBuilder;
 use LasseRafn\Economic\Builders\Builder;
 use LasseRafn\Economic\Builders\ContactBuilder;
+use LasseRafn\Economic\Builders\CostTypeBuilder;
+use LasseRafn\Economic\Builders\CostTypeGroupBuilder;
 use LasseRafn\Economic\Builders\CustomerAddressBuilder;
 use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
@@ -20,6 +22,8 @@ use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
 use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
 use LasseRafn\Economic\Builders\JournalBuilder;
+use LasseRafn\Economic\Builders\JournalEntriesBuilder;
+use LasseRafn\Economic\Builders\JournalVouchersBuilder;
 use LasseRafn\Economic\Builders\LayoutBuilder;
 use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
@@ -308,6 +312,21 @@ class Economic
 	public function projectsGroups()
 	{
 		return new ProjectGroupBuilder($this->newApiRequest);
+  }
+
+	 * @return CostTypeBuilder()|Builder
+	 */
+	public function cost_types()
+	{
+		return new CostTypeBuilder($this->newApiRequest);
+	}
+
+	/**
+	 * @return CostTypeGroupBuilder()|Builder
+	 */
+	public function cost_type_groups()
+	{
+		return new CostTypeGroupBuilder($this->newApiRequest);
 	}
 
 	/**
@@ -443,5 +462,22 @@ class Economic
     protected function initNewApiRequest($baseUri = null)
     {
         $this->newApiRequest = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
+    }
+
+
+    /**
+     * @return JournalVouchersBuilder
+     */
+    public function journalVouchers($journalNumber)
+    {
+        return new JournalVouchersBuilder($this->request, $journalNumber);
+    }
+
+    /**
+     * @return JournalEntriesBuilder
+     */
+    public function journalEntries($journalNumber)
+    {
+        return new JournalEntriesBuilder($this->request, $journalNumber);
     }
 }
