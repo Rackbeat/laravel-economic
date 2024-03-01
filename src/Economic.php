@@ -3,12 +3,16 @@
 namespace LasseRafn\Economic;
 
 use LasseRafn\Economic\Builders\AccountBuilder;
+use LasseRafn\Economic\Builders\AccountingEntryBuilder;
+use LasseRafn\Economic\Builders\AccountingPeriodTotalsBuilder;
 use LasseRafn\Economic\Builders\AccountingYearBuilder;
 use LasseRafn\Economic\Builders\ArchivedOrderBuilder;
 use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
 use LasseRafn\Economic\Builders\AdditionalInventoryDataBuilder;
 use LasseRafn\Economic\Builders\Builder;
 use LasseRafn\Economic\Builders\ContactBuilder;
+use LasseRafn\Economic\Builders\CostTypeBuilder;
+use LasseRafn\Economic\Builders\CostTypeGroupBuilder;
 use LasseRafn\Economic\Builders\CustomerAddressBuilder;
 use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
@@ -18,6 +22,8 @@ use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
 use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
 use LasseRafn\Economic\Builders\JournalBuilder;
+use LasseRafn\Economic\Builders\JournalEntriesBuilder;
+use LasseRafn\Economic\Builders\JournalVouchersBuilder;
 use LasseRafn\Economic\Builders\LayoutBuilder;
 use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
@@ -25,6 +31,7 @@ use LasseRafn\Economic\Builders\ProductBuilder;
 use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
 use LasseRafn\Economic\Builders\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\ProjectBuilder;
+use LasseRafn\Economic\Builders\ProjectGroupBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
 use LasseRafn\Economic\Builders\SentOrderBuilder;
 use LasseRafn\Economic\Builders\SupplierBuilder;
@@ -149,11 +156,10 @@ class Economic
 	}
 
 	/**
-	 * This endpoint is experimental.
 	 *
 	 * @return JournalBuilder()|Builder
 	 */
-	public function experimentalJournals()
+	public function journals()
 	{
 		return new JournalBuilder($this->request);
 	}
@@ -301,6 +307,29 @@ class Economic
     }
 
 	/**
+	 * @return ProjectGroupBuilder()|Builder
+	 */
+	public function projectsGroups()
+	{
+		return new ProjectGroupBuilder($this->newApiRequest);
+  }
+
+	 * @return CostTypeBuilder()|Builder
+	 */
+	public function cost_types()
+	{
+		return new CostTypeBuilder($this->newApiRequest);
+	}
+
+	/**
+	 * @return CostTypeGroupBuilder()|Builder
+	 */
+	public function cost_type_groups()
+	{
+		return new CostTypeGroupBuilder($this->newApiRequest);
+	}
+
+	/**
 	 * @return UserBuilder()|Builder
 	 *
 	 * WARNING: Undocumented endpoint!
@@ -355,13 +384,31 @@ class Economic
 	 *
 	 * @return AccountingYearBuilder()|Builder
 	 */
-	public function accountingYear($year = null)
+	public function accountingYear(int $account, $year = null)
 	{
 		if ($year === null) {
 			$year = (int) date('Y');
 		}
 
-		return new AccountingYearBuilder($this->request, $year);
+		return new AccountingYearBuilder($this->request, $account, $year);
+	}
+
+	/**
+	 *
+	 * @return AccountingPeriodTotalsBuilder()|Builder
+	 */
+	public function accountingPeriodTotal($account, $year, $period)
+	{
+		return new AccountingPeriodTotalsBuilder($this->request, $account, $year, $period);
+	}
+
+	/**
+	 *
+	 * @return AccountingEntryBuilder()|Builder
+	 */
+	public function accountingEntries($account, $year, $period)
+	{
+		return new AccountingEntryBuilder($this->request, $account, $year, $period);
 	}
 
 	/**
@@ -415,5 +462,22 @@ class Economic
     protected function initNewApiRequest($baseUri = null)
     {
         $this->newApiRequest = new Request($this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri);
+    }
+
+
+    /**
+     * @return JournalVouchersBuilder
+     */
+    public function journalVouchers($journalNumber)
+    {
+        return new JournalVouchersBuilder($this->request, $journalNumber);
+    }
+
+    /**
+     * @return JournalEntriesBuilder
+     */
+    public function journalEntries($journalNumber)
+    {
+        return new JournalEntriesBuilder($this->request, $journalNumber);
     }
 }

@@ -6,7 +6,7 @@ use LasseRafn\Economic\Utils\Model;
 
 class Journal extends Model
 {
-    protected $entity = 'journals-experimental';
+    protected $entity = 'journals';
     protected $primaryKey = 'journalNumber';
 
     public $journalNumber;
