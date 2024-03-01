@@ -31,6 +31,7 @@ use LasseRafn\Economic\Builders\ProductBuilder;
 use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
 use LasseRafn\Economic\Builders\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\ProjectBuilder;
+use LasseRafn\Economic\Builders\ProjectGroupBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
 use LasseRafn\Economic\Builders\SentOrderBuilder;
 use LasseRafn\Economic\Builders\SupplierBuilder;
@@ -306,6 +307,13 @@ class Economic
     }
 
 	/**
+	 * @return ProjectGroupBuilder()|Builder
+	 */
+	public function projectsGroups()
+	{
+		return new ProjectGroupBuilder($this->newApiRequest);
+  }
+
 	 * @return CostTypeBuilder()|Builder
 	 */
 	public function cost_types()
