@@ -4,6 +4,8 @@ namespace LasseRafn\Economic\Utils;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use LasseRafn\Economic\Economic;
+use LasseRafn\Economic\Models\Customer;
 
 class Model
 {
@@ -76,6 +78,11 @@ class Model
 		$this->{$attribute} = $value;
 	}
 
+    public function setRequest(?Request $request): void
+    {
+        $this->request = $request;
+    }
+
 	public function delete()
 	{
 		return $this->request->handleWithExceptions(function () {
@@ -112,4 +119,21 @@ class Model
 
 	    return $updateEndpoint;
 	}
+
+    public function getAllData( Economic $economic ): Model
+    {
+        $this->lines = $economic->getOrderLines( $this->orderNumber, $this );
+
+        /* --------------------------------------------------------
+         * Debtor billing address
+         * ----------------------------------------------------- */
+        /** @var Customer $customer */
+        $customer                = $economic->customers()->find( $this->customer->customerNumber );
+        $this->billingAddress    = $customer->address;
+        $this->billingCity       = $customer->city;
+        $this->billingPostalCode = $customer->zip;
+        $this->billingCountry    = $customer->country;
+
+        return $this;
+    }
 }

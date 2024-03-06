@@ -2,6 +2,8 @@
 
 namespace LasseRafn\Economic\Models;
 
+use LasseRafn\Economic\Builders\ProductBuilder;
+use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
 use LasseRafn\Economic\Utils\Model;
 
 class Product extends Model
@@ -43,4 +45,15 @@ class Product extends Model
      * @var object productGroup
      */
     public $productGroup;
+
+    /**
+     * @return ProductCurrencyPriceBuilder
+     */
+    public function currencyPrices()
+    {
+        return new ProductCurrencyPriceBuilder(
+            $this->request, 
+            (new ProductBuilder($this->request))->encode($this->productNumber)
+        );
+    }
 }

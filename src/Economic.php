@@ -3,24 +3,35 @@
 namespace LasseRafn\Economic;
 
 use LasseRafn\Economic\Builders\AccountBuilder;
+use LasseRafn\Economic\Builders\AccountingEntryBuilder;
+use LasseRafn\Economic\Builders\AccountingPeriodTotalsBuilder;
 use LasseRafn\Economic\Builders\AccountingYearBuilder;
 use LasseRafn\Economic\Builders\ArchivedOrderBuilder;
 use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
+use LasseRafn\Economic\Builders\AdditionalInventoryDataBuilder;
 use LasseRafn\Economic\Builders\Builder;
 use LasseRafn\Economic\Builders\ContactBuilder;
+use LasseRafn\Economic\Builders\CostTypeBuilder;
+use LasseRafn\Economic\Builders\CostTypeGroupBuilder;
+use LasseRafn\Economic\Builders\CustomerAddressBuilder;
 use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
+use LasseRafn\Economic\Builders\DepartmentBuilder;
 use LasseRafn\Economic\Builders\DraftInvoiceBuilder;
 use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
 use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
 use LasseRafn\Economic\Builders\JournalBuilder;
+use LasseRafn\Economic\Builders\JournalEntriesBuilder;
+use LasseRafn\Economic\Builders\JournalVouchersBuilder;
 use LasseRafn\Economic\Builders\LayoutBuilder;
 use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
 use LasseRafn\Economic\Builders\ProductBuilder;
+use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
 use LasseRafn\Economic\Builders\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\ProjectBuilder;
+use LasseRafn\Economic\Builders\ProjectGroupBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
 use LasseRafn\Economic\Builders\SentOrderBuilder;
 use LasseRafn\Economic\Builders\SupplierBuilder;
@@ -118,6 +129,14 @@ class Economic
 		return new AccountBuilder( $this->request );
 	}
 
+    /**
+     * @return DepartmentBuilder|Builder
+     */
+    public function departments()
+    {
+        return new DepartmentBuilder($this->request);
+    }
+
 	/**
 	 * @return SupplierBuilder()|Builder
 	 * @deprecated use suppliers() instead
@@ -137,11 +156,10 @@ class Economic
 	}
 
 	/**
-	 * This endpoint is experimental.
 	 *
 	 * @return JournalBuilder()|Builder
 	 */
-	public function experimentalJournals()
+	public function journals()
 	{
 		return new JournalBuilder( $this->request );
 	}
@@ -181,6 +199,16 @@ class Economic
 	{
 		return new ContactBuilder( $this->request, $customerNumber );
 	}
+
+    /**
+     * @param integer $customerNumber
+     *
+     * @return CustomerAddressBuilder()|Builder
+     */
+    public function customerAddresses($customerNumber)
+    {
+        return new CustomerAddressBuilder($this->request, $customerNumber);
+    }
 
 	/**
 	 * @return VatZoneBuilder|Builder
@@ -238,6 +266,14 @@ class Economic
 		return new ProductGroupBuilder( $this->request );
 	}
 
+    /**
+     * @return ProductCurrencyPriceBuilder()|Builder
+     */
+    public function productCurrencyPrices($productNumber)
+    {
+        return new ProductCurrencyPriceBuilder($this->request, $productNumber);
+    }
+
 	/**
 	 * @return UnitBuilder()|Builder
 	 */
@@ -268,6 +304,29 @@ class Economic
 	public function projects()
 	{
 		return new ProjectBuilder( $this->newApiRequest );
+	}
+
+	/**
+	 * @return ProjectGroupBuilder()|Builder
+	 */
+	public function projectsGroups()
+	{
+		return new ProjectGroupBuilder($this->newApiRequest);
+  }
+
+	 * @return CostTypeBuilder()|Builder
+	 */
+	public function cost_types()
+	{
+		return new CostTypeBuilder($this->newApiRequest);
+	}
+
+	/**
+	 * @return CostTypeGroupBuilder()|Builder
+	 */
+	public function cost_type_groups()
+	{
+		return new CostTypeGroupBuilder($this->newApiRequest);
 	}
 
 	/**
@@ -313,17 +372,43 @@ class Economic
 	}
 
 	/**
+	 * @return AdditionalInventoryDataBuilder
+	 */
+	public function additionalInventoryData()
+	{
+		return new AdditionalInventoryDataBuilder($this->request);
+	}
+
+	/**
 	 * @param int|null $year
 	 *
 	 * @return AccountingYearBuilder()|Builder
 	 */
-	public function accountingYear( $year = null )
+	public function accountingYear(int $account, $year = null)
 	{
 		if ( $year === null ) {
 			$year = (int) date( 'Y' );
 		}
 
-		return new AccountingYearBuilder( $this->request, $year );
+		return new AccountingYearBuilder($this->request, $account, $year);
+	}
+
+	/**
+	 *
+	 * @return AccountingPeriodTotalsBuilder()|Builder
+	 */
+	public function accountingPeriodTotal($account, $year, $period)
+	{
+		return new AccountingPeriodTotalsBuilder($this->request, $account, $year, $period);
+	}
+
+	/**
+	 *
+	 * @return AccountingEntryBuilder()|Builder
+	 */
+	public function accountingEntries($account, $year, $period)
+	{
+		return new AccountingEntryBuilder($this->request, $account, $year, $period);
 	}
 
 	/**
@@ -340,6 +425,30 @@ class Economic
 		return new VoucherBuilder( $this->request, $year );
 	}
 
+
+    public function getOrderLines(int $orderNumber, Model $entity): ?array
+    {
+        $order = null;
+        $lines = null;
+
+        if(str_contains(get_class($entity), 'SentOrder')) {
+            $order = $this->sentOrders()->find($orderNumber);
+	} else if (str_contains(get_class($entity), 'DraftOrder')) {
+            $order = $this->draftOrders()->find($orderNumber);
+	} else if (str_contains(get_class($entity), 'ArchivedOrder')) {
+            $order = $this->archivedOrders()->find($orderNumber);
+	}
+
+        if (!is_null($order)){
+            $lines = $order->lines;
+        }
+        if (!\is_array($lines)) {
+            $lines = [$lines];
+        }
+
+        return $lines;
+    }
+
 	public function downloadInvoice( $directUrl )
 	{
 		return $this->request->doRequest( 'get', $directUrl )->body();
@@ -354,4 +463,21 @@ class Economic
 	{
 		$this->newApiRequest = new Request( $this->agreement, $this->apiSecret, $this->stripNullValues, $baseUri );
 	}
+
+
+    /**
+     * @return JournalVouchersBuilder
+     */
+    public function journalVouchers($journalNumber)
+    {
+        return new JournalVouchersBuilder($this->request, $journalNumber);
+    }
+
+    /**
+     * @return JournalEntriesBuilder
+     */
+    public function journalEntries($journalNumber)
+    {
+        return new JournalEntriesBuilder($this->request, $journalNumber);
+    }
 }

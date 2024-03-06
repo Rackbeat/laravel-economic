@@ -6,6 +6,6 @@ use LasseRafn\Economic\Models\Journal;
 
 class JournalBuilder extends Builder
 {
-    protected $entity = 'journals-experimental';
+    protected $entity = 'journals';
     protected $model = Journal::class;
 }

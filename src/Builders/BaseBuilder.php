@@ -3,35 +3,22 @@
 namespace LasseRafn\Economic\Builders;
 
 use Illuminate\Support\Facades\Log;
-use LasseRafn\Economic\FilterOperators\AndOperator;
-use LasseRafn\Economic\FilterOperators\EqualsOperator;
-use LasseRafn\Economic\FilterOperators\FilterOperatorInterface;
-use LasseRafn\Economic\FilterOperators\GreaterThanOperator;
-use LasseRafn\Economic\FilterOperators\GreaterThanOrEqualOperator;
-use LasseRafn\Economic\FilterOperators\InOperator;
-use LasseRafn\Economic\FilterOperators\LessThanOperator;
-use LasseRafn\Economic\FilterOperators\LessThanOrEqualOperator;
-use LasseRafn\Economic\FilterOperators\LikeOperator;
-use LasseRafn\Economic\FilterOperators\NotEqualsOperator;
-use LasseRafn\Economic\FilterOperators\NotInOperator;
-use LasseRafn\Economic\FilterOperators\NullOperator;
-use LasseRafn\Economic\FilterOperators\OperatorNotFound;
-use LasseRafn\Economic\FilterOperators\OrOperator;
 use LasseRafn\Economic\Utils\Model;
 use LasseRafn\Economic\Utils\Request;
+use LasseRafn\Economic\Services\QueryGeneratorService;
 
 class BaseBuilder
 {
-	protected $request;
-	protected $entity;
+    protected $request;
+    protected $entity;
 
-	/** @var Model */
-	protected $model;
+    /** @var Model */
+    protected $model;
 
-	public function __construct( Request $request )
-	{
-		$this->request = $request;
-	}
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
 
 	/**
 	 * @param $id
@@ -82,12 +69,12 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-	public function get( $filters = [] )
+    public function get($filters = [], $sorting = [])
 	{
-		$urlFilters = $this->generateQueryStringFromFilterArray( $filters );
+	    $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting = []);
 
-		return $this->request->handleWithExceptions( function () use ( $urlFilters ) {
-			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}{$urlFilters}" );
+        return $this->request->handleWithExceptions(function () use ($urlQuery) {
+	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}{$urlQuery}");
 
 			$items = collect( [] );
 			foreach ( $response->throw()->json('collection') as $item ) {
@@ -116,10 +103,10 @@ class BaseBuilder
 	{
 		$items = collect( [] );
 
-		$urlFilters = $this->generateQueryStringFromFilterArray( $filters, true );
+        $urlQuery = QueryGeneratorService::generateQuery($filters, [] ,true);
 
-		return $this->request->handleWithExceptions( function () use ( $pageSize, &$page, &$items, $urlFilters ) {
-			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}" );
+        return $this->request->handleWithExceptions(function () use ($pageSize, &$page, &$items, $urlQuery) {
+	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
 
 			foreach ( $response->throw()->json('collection') as $item ) {
 				/** @var Model $model */
@@ -142,29 +129,23 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-	public function all( $filters = [], $pageSize = 100 )
+    public function all($filters = [], $sorting = [], $pageSize = 100)
 	{
 		$page     = 0;
-		$pagesize = $pageSize;
+        $page = 0;
 		$hasMore  = true;
 		$items    = collect( [] );
 
-		$urlFilters = $this->generateQueryStringFromFilterArray( $filters, true );
+	    $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting, true);
 
-		return $this->request->handleWithExceptions( function () use ( &$hasMore, $pagesize, &$page, &$items, $urlFilters ) {
+        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$page, &$items, $urlQuery) {
 			while ( $hasMore ) {
-				$response     = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pagesize}{$urlFilters}" );
+				$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
 				$response->throw();
 
 				$fetchedItems = empty( $this->rest_version ) ? $response->json('collection') : $response->json();
 
 				$response->close();
-
-				if ( count( $fetchedItems ) === 0 ) {
-					$hasMore = false;
-
-					break;
-				}
 
 				foreach ( $fetchedItems as $item ) {
 					/** @var Model $model */
@@ -172,6 +153,14 @@ class BaseBuilder
 
 					$items->push( $model );
 				}
+
+	            // If we got fewer items returned than requested, it means we reached page limit
+	            // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+	            // Since e-conomic max pageSize is 1000.
+	            if (count($fetchedItems) < min($pageSize, 1000)) {
+		            $hasMore = false;
+					break;
+	            }
 
 				$page++;
 			}
@@ -204,121 +193,64 @@ class BaseBuilder
 		} );
 	}
 
-	/**
-	 * @param string $operator
-	 *
-	 * @return FilterOperatorInterface
-	 *
-	 * @throws OperatorNotFound
-	 */
-	protected function getOperator( $operator )
+    /**
+     * @param array $filters
+     * @param int   $pageSize
+     *
+     * @return \Generator
+     * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
+     * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
+     */
+    public function allWithGenerators($filters = [], $sorting = [], $pageSize = 500)
 	{
-		switch ( \mb_strtolower( $operator ) ) {
-			case '=':
-			case '==':
-			case '===':
-				return new EqualsOperator;
-			case '!=':
-			case '!==':
-				return new NotEqualsOperator;
-			case '>':
-				return new GreaterThanOperator;
-			case '>=':
-				return new GreaterThanOrEqualOperator;
-			case '<':
-				return new LessThanOperator;
-			case '<=':
-				return new LessThanOrEqualOperator;
-			case 'like':
-				return new LikeOperator;
-			case 'in':
-				return new InOperator;
-			case '!in':
-			case 'not in':
-				return new NotInOperator;
-			case 'or':
-			case 'or else':
-				return new OrOperator;
-			case 'and':
-				return new AndOperator;
-			case 'null':
-				return new NullOperator;
-			default:
-				throw new OperatorNotFound( $operator );
-		}
+        $page = 0;
+        $hasMore = true;
+        $items = collect([]);
+
+        $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting, true);
+
+        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlQuery) {
+            while ($hasMore) {
+                $responseData = $this->getRequest($page, $pageSize, $urlQuery);
+
+                $items = $this->parseResponse($responseData, $items);
+
+	            foreach ($items as $result){
+		            yield $result;
+	            }
+
+                // If we got fewer items returned than requested, it means we reached page limit
+                // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+                // Since e-conomic max pageSize is 1000.
+                if (count($responseData->collection) < min($pageSize, 1000)) {
+                    $hasMore = false;
+
+                    break;
+                }
+
+                $page++;
+            }
+
+            return $items;
+        });
 	}
 
-	protected function generateQueryStringFromFilterArray( $filters, $and = false )
+    protected function getRequest($page, $pageSize, $urlFilters): \stdClass
 	{
-		if ( \count( $filters ) === 0 ) {
-			return '';
-		}
+        $response = $this->request->doRequest('get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}");
 
-		$string = ( $and ? '&' : '?' ) . 'filter=';
+        return json_decode($response->getBody()->getContents());
+    }
 
-		$i = 1;
-		foreach ( $filters as $filter ) {
-			// To support passing in 'and' / 'or' as an individual filter rather than ['', 'and', '']
-			if ( ! \is_array( $filter ) && \count( $filter ) === 1 ) {
-				$filterOperator = $this->getOperator( $filter[0] ?? $filter );
+    public function parseResponse($responseData, \Illuminate\Support\Collection $items): \Illuminate\Support\Collection
+    {
 
-				if ( ( $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) ) {
-					$string .= $filterOperator->queryString;
-					$i++;
-					continue;
-				}
-			}
+        foreach ($responseData->collection as $item) {
+            $model = new $this->model($this->request, $item);
 
-			$filterOperator = $this->getOperator( $filter[1] );
-			$string         .= $filter[0] . $filterOperator->queryString . $this->transformFilterValue( $filter[2], $filterOperator );
+            $items->push($model);
+        }
 
-			if ( ! ( $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) && \count( $filters ) > $i ) {
-				$string .= ( new AndOperator )->queryString;
-			}
-
-			$i++;
-		}
-
-		return $string;
-	}
-
-	protected function transformFilterValue( $value, FilterOperatorInterface $filterOperator )
-	{
-		if ( $value === null ) {
-			return ( new NullOperator )->queryString;
-		}
-
-		if ( $filterOperator instanceof NullOperator || $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) {
-			return '';
-		}
-
-		if ( $filterOperator instanceof InOperator && \is_array( $value ) ) {
-			return '[' . implode( ',', $value ) . ']';
-		}
-
-		$escapedStrings = [
-			'$',
-			'(',
-			')',
-			'*',
-			'[',
-			']',
-			',',
-		];
-
-		$urlencodedStrings = [
-			'+',
-			' ',
-		];
-
-		foreach ( $escapedStrings as $escapedString ) {
-			$value = str_replace( $escapedString, '$' . $escapedString, $value );
-		}
-
-		foreach ( $urlencodedStrings as $urlencodedString ) {
-			$value = str_replace( $urlencodedString, urlencode( $urlencodedString ), $value );
-		}
-
-		return $value;
+        return $items;
 	}
 }
