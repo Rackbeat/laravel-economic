@@ -20,10 +20,6 @@ class Request
 
 	public function __construct($agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null, $contentType = 'application/json')
 	{
-        if ($contentType === 'multipart/form-data'){
-            $data["mimeType"] = "multipart/form-data"; // FIXME NEED THIS SUPPORT!!
-        }
-
 		$this->curl = Http::withHeaders( [
 			'X-AppSecretToken'      => $apiSecret,
 			'X-AgreementGrantToken' => $agreementToken,
