@@ -129,13 +129,13 @@ class Economic
 		return new AccountBuilder( $this->request );
 	}
 
-    /**
-     * @return DepartmentBuilder|Builder
-     */
-    public function departments()
-    {
-        return new DepartmentBuilder($this->request);
-    }
+	/**
+	 * @return DepartmentBuilder|Builder
+	 */
+	public function departments()
+	{
+		return new DepartmentBuilder( $this->request );
+	}
 
 	/**
 	 * @return SupplierBuilder()|Builder
@@ -200,15 +200,15 @@ class Economic
 		return new ContactBuilder( $this->request, $customerNumber );
 	}
 
-    /**
-     * @param integer $customerNumber
-     *
-     * @return CustomerAddressBuilder()|Builder
-     */
-    public function customerAddresses($customerNumber)
-    {
-        return new CustomerAddressBuilder($this->request, $customerNumber);
-    }
+	/**
+	 * @param integer $customerNumber
+	 *
+	 * @return CustomerAddressBuilder()|Builder
+	 */
+	public function customerAddresses( $customerNumber )
+	{
+		return new CustomerAddressBuilder( $this->request, $customerNumber );
+	}
 
 	/**
 	 * @return VatZoneBuilder|Builder
@@ -266,13 +266,13 @@ class Economic
 		return new ProductGroupBuilder( $this->request );
 	}
 
-    /**
-     * @return ProductCurrencyPriceBuilder()|Builder
-     */
-    public function productCurrencyPrices($productNumber)
-    {
-        return new ProductCurrencyPriceBuilder($this->request, $productNumber);
-    }
+	/**
+	 * @return ProductCurrencyPriceBuilder()|Builder
+	 */
+	public function productCurrencyPrices( $productNumber )
+	{
+		return new ProductCurrencyPriceBuilder( $this->request, $productNumber );
+	}
 
 	/**
 	 * @return UnitBuilder()|Builder
@@ -311,14 +311,15 @@ class Economic
 	 */
 	public function projectsGroups()
 	{
-		return new ProjectGroupBuilder($this->newApiRequest);
-  }
+		return new ProjectGroupBuilder( $this->newApiRequest );
+	}
 
-	 * @return CostTypeBuilder()|Builder
-	 */
+	/*
+	   * @return CostTypeBuilder|Builder
+	   */
 	public function cost_types()
 	{
-		return new CostTypeBuilder($this->newApiRequest);
+		return new CostTypeBuilder( $this->newApiRequest );
 	}
 
 	/**
@@ -326,7 +327,7 @@ class Economic
 	 */
 	public function cost_type_groups()
 	{
-		return new CostTypeGroupBuilder($this->newApiRequest);
+		return new CostTypeGroupBuilder( $this->newApiRequest );
 	}
 
 	/**
@@ -376,7 +377,7 @@ class Economic
 	 */
 	public function additionalInventoryData()
 	{
-		return new AdditionalInventoryDataBuilder($this->request);
+		return new AdditionalInventoryDataBuilder( $this->request );
 	}
 
 	/**
@@ -384,31 +385,31 @@ class Economic
 	 *
 	 * @return AccountingYearBuilder()|Builder
 	 */
-	public function accountingYear(int $account, $year = null)
+	public function accountingYear( int $account, $year = null )
 	{
 		if ( $year === null ) {
 			$year = (int) date( 'Y' );
 		}
 
-		return new AccountingYearBuilder($this->request, $account, $year);
+		return new AccountingYearBuilder( $this->request, $account, $year );
 	}
 
 	/**
 	 *
 	 * @return AccountingPeriodTotalsBuilder()|Builder
 	 */
-	public function accountingPeriodTotal($account, $year, $period)
+	public function accountingPeriodTotal( $account, $year, $period )
 	{
-		return new AccountingPeriodTotalsBuilder($this->request, $account, $year, $period);
+		return new AccountingPeriodTotalsBuilder( $this->request, $account, $year, $period );
 	}
 
 	/**
 	 *
 	 * @return AccountingEntryBuilder()|Builder
 	 */
-	public function accountingEntries($account, $year, $period)
+	public function accountingEntries( $account, $year, $period )
 	{
-		return new AccountingEntryBuilder($this->request, $account, $year, $period);
+		return new AccountingEntryBuilder( $this->request, $account, $year, $period );
 	}
 
 	/**
@@ -426,28 +427,28 @@ class Economic
 	}
 
 
-    public function getOrderLines(int $orderNumber, Model $entity): ?array
-    {
-        $order = null;
-        $lines = null;
+	public function getOrderLines( int $orderNumber, Model $entity ): ?array
+	{
+		$order = null;
+		$lines = null;
 
-        if(str_contains(get_class($entity), 'SentOrder')) {
-            $order = $this->sentOrders()->find($orderNumber);
-	} else if (str_contains(get_class($entity), 'DraftOrder')) {
-            $order = $this->draftOrders()->find($orderNumber);
-	} else if (str_contains(get_class($entity), 'ArchivedOrder')) {
-            $order = $this->archivedOrders()->find($orderNumber);
+		if ( str_contains( get_class( $entity ), 'SentOrder' ) ) {
+			$order = $this->sentOrders()->find( $orderNumber );
+		} else if ( str_contains( get_class( $entity ), 'DraftOrder' ) ) {
+			$order = $this->draftOrders()->find( $orderNumber );
+		} else if ( str_contains( get_class( $entity ), 'ArchivedOrder' ) ) {
+			$order = $this->archivedOrders()->find( $orderNumber );
+		}
+
+		if ( ! is_null( $order ) ) {
+			$lines = $order->lines;
+		}
+		if ( ! \is_array( $lines ) ) {
+			$lines = [ $lines ];
+		}
+
+		return $lines;
 	}
-
-        if (!is_null($order)){
-            $lines = $order->lines;
-        }
-        if (!\is_array($lines)) {
-            $lines = [$lines];
-        }
-
-        return $lines;
-    }
 
 	public function downloadInvoice( $directUrl )
 	{
@@ -465,19 +466,19 @@ class Economic
 	}
 
 
-    /**
-     * @return JournalVouchersBuilder
-     */
-    public function journalVouchers($journalNumber)
-    {
-        return new JournalVouchersBuilder($this->request, $journalNumber);
-    }
+	/**
+	 * @return JournalVouchersBuilder
+	 */
+	public function journalVouchers( $journalNumber )
+	{
+		return new JournalVouchersBuilder( $this->request, $journalNumber );
+	}
 
-    /**
-     * @return JournalEntriesBuilder
-     */
-    public function journalEntries($journalNumber)
-    {
-        return new JournalEntriesBuilder($this->request, $journalNumber);
-    }
+	/**
+	 * @return JournalEntriesBuilder
+	 */
+	public function journalEntries( $journalNumber )
+	{
+		return new JournalEntriesBuilder( $this->request, $journalNumber );
+	}
 }
