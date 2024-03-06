@@ -140,7 +140,7 @@ class BaseBuilder
 
 		return $this->request->handleWithExceptions( function () use ( &$hasMore, $pageSize, &$page, &$items, $urlQuery ) {
 			while ( $hasMore ) {
-				$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}" );
+				$response     = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}" );
 				$response->throw();
 
 				$fetchedItems = empty( $this->rest_version ) ? $response->json( 'collection' ) : $response->json();
