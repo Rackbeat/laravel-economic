@@ -12,6 +12,6 @@ use App\Economic\Models\PaidInvoice;
 
 class PaidInvoiceBuilder extends Builder
 {
-    protected $entity = 'invoices/paid';
-    protected $model = PaidInvoice::class;
+	protected $entity = 'invoices/paid';
+	protected $model  = PaidInvoice::class;
 }

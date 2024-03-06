@@ -10,43 +10,43 @@ use LasseRafn\Economic\Utils\Request;
 
 class JournalVouchersBuilder extends Builder
 {
-    protected $entity = 'journals/:journalNumber/vouchers';
-    protected $model = JournalVouchers::class;
+	protected $entity = 'journals/:journalNumber/vouchers';
+	protected $model  = JournalVouchers::class;
 
 
-    public function __construct(Request $request, $journalNumber)
-    {
-        $this->entity = str_replace(':journalNumber', $journalNumber, $this->entity);
+	public function __construct( Request $request, $journalNumber )
+	{
+		$this->entity = str_replace( ':journalNumber', $journalNumber, $this->entity );
 
-        parent::__construct($request);
-    }
-    
-    public function uploadVoucherPdf($accountingYear, $voucherNumber, $pdf)
-    {
-        $this->entity .= '/' . $accountingYear . '-' . $voucherNumber . '/attachment/file';
+		parent::__construct( $request );
+	}
 
-        $agreementToken = $this->request->curl->getConfig('headers')['X-AgreementGrantToken'];
-        $apiSecret = $this->request->curl->getConfig('headers')['X-AppSecretToken'];
+	public function uploadVoucherPdf( $accountingYear, $voucherNumber, $pdf )
+	{
+		$this->entity .= '/' . $accountingYear . '-' . $voucherNumber . '/attachment/file';
 
-        $this->request = new Request($agreementToken, $apiSecret, false, null, 'multipart/form-data');
+		$agreementToken = $this->request->curl->getConfig( 'headers' )['X-AgreementGrantToken'];
+		$apiSecret      = $this->request->curl->getConfig( 'headers' )['X-AppSecretToken'];
 
-        return $this->request->handleWithExceptions(function () use ($pdf, $voucherNumber) {
-        
-            $response = $this->request->doRequest('post', "{$this->rest_version}/{$this->entity}",[
-                'multipart' => [
-                    [
-                        'name'     => (string)$voucherNumber,
-                        'contents' => $pdf,
-                        'filename' => (string)$voucherNumber . '.pdf',
-                    ],
-                ],
-            ]);
+		$this->request = new Request( $agreementToken, $apiSecret, false, null, 'multipart/form-data' );
 
-            $responseData = json_decode($response->getBody()->getContents());
+		return $this->request->handleWithExceptions( function () use ( $pdf, $voucherNumber ) {
 
-            $response->getBody()->close();
-            
-            return new $this->model($this->request, $responseData);
-        });
-    }
+			$response = $this->request->doRequest( 'post', "{$this->rest_version}/{$this->entity}", [
+				'multipart' => [
+					[
+						'name'     => (string) $voucherNumber,
+						'contents' => $pdf,
+						'filename' => (string) $voucherNumber . '.pdf',
+					],
+				],
+			] );
+
+			$responseData = json_decode( $response->getBody()->getContents() );
+
+			$response->getBody()->close();
+
+			return new $this->model( $this->request, $responseData );
+		} );
+	}
 }

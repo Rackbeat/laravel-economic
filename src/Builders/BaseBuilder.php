@@ -32,30 +32,53 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use ($id) {
             $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}/{$id}");
 
-            $responseData = json_decode($response->getBody()->getContents());
-		
-            $response->getBody()->close();
+			$responseData = $response->throw()->json();
+
+			$response->close();
+
             return new $this->model($this->request, $responseData);
         });
     }
 
+
 	/**
-	 * @return Model
+	 * @return null|Model
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function first()
-    {
-        return $this->request->handleWithExceptions(function () {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1");
+	public function first($sortByField = null)
+	{
+		return $this->request->handleWithExceptions( function () use($sortByField) {
+			$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort={$sortByField}");
 
-            $responseData = json_decode($response->getBody()->getContents());
-            $fetchedItems = $responseData->collection;
-		
-            $response->getBody()->close();
+			$fetchedItems = $response->throw()->json( 'collection' );
+
+			$response->close();
+
+			if ( count( $fetchedItems ) === 0 ) {
+				return null;
+			}
+
+			return new $this->model( $this->request, $fetchedItems[0] );
+		} );
+	}
+
+	/**
+	 * @return null|Model
+	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
+	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
+	 */
+    public function last($sortByField)
+    {
+        return $this->request->handleWithExceptions(function () use($sortByField) {
+	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort=-{$sortByField}");
+
+			$fetchedItems = $response->throw()->json( 'collection' );
+
+			$response->close();
 
             if (count($fetchedItems) === 0) {
-                return;
+				return null;
             }
 
             return new $this->model($this->request, $fetchedItems[0]);
@@ -76,19 +99,15 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use ($urlQuery) {
 	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}{$urlQuery}");
 
-            $responseData = json_decode($response->getBody()->getContents());
-
-            $fetchedItems = $responseData->collection;
-
             $items = collect([]);
-            foreach ($fetchedItems as $item) {
+			foreach ( $response->throw()->json( 'collection' ) as $item ) {
                 /** @var Model $model */
                 $model = new $this->model($this->request, $item);
 
                 $items->push($model);
             }
-		
-            $response->getBody()->close();
+
+			$response->close();
 
             return $items;
         });
@@ -112,17 +131,14 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use ($pageSize, &$page, &$items, $urlQuery) {
 	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
 
-            $responseData = json_decode($response->getBody()->getContents());
-            $fetchedItems = $responseData->collection;
-
-            foreach ($fetchedItems as $item) {
+			foreach ( $response->throw()->json( 'collection' ) as $item ) {
                 /** @var Model $model */
                 $model = new $this->model($this->request, $item);
 
                 $items->push($model);
             }
-		
-            $response->getBody()->close();
+
+			$response->close();
 
             return $items;
         });
@@ -138,6 +154,7 @@ class BaseBuilder
 	 */
     public function all($filters = [], $sorting = [], $pageSize = 100)
     {
+		$page    = 0;
         $page = 0;
         $hasMore = true;
         $items = collect([]);
@@ -147,11 +164,11 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$page, &$items, $urlQuery) {
             while ($hasMore) {
 	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
-                $responseData = json_decode($response->getBody()->getContents());
-                
-                $fetchedItems = empty($this->rest_version) ? $responseData->collection : $responseData;
-		    
-            	$response->getBody()->close();
+				$response->throw();
+
+				$fetchedItems = empty( $this->rest_version ) ? $response->json( 'collection' ) : $response->json();
+
+				$response->close();
 
                 foreach ($fetchedItems as $item) {
                     /** @var Model $model */
@@ -191,9 +208,9 @@ class BaseBuilder
 		        'json' => $data,
 	        ]);
 
-            $responseData = json_decode($response->getBody()->getContents());
-		    
-            	$response->getBody()->close();
+			$responseData = $response->throw()->json();
+
+			$response->close();
 
             return new $this->model($this->request, $responseData);
         });
