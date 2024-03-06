@@ -7,47 +7,47 @@ use LasseRafn\Economic\Utils\Request;
 
 class SingleBuilder
 {
-    private $request;
-    protected $entity;
+	private   $request;
+	protected $entity;
 
-    /** @var Model */
-    protected $model;
+	/** @var Model */
+	protected $model;
 
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
+	public function __construct( Request $request )
+	{
+		$this->request = $request;
+	}
 
-    /**
-     * @param $id
-     *
-     * @return mixed|Model
-     */
-    public function find($id)
-    {
+	/**
+	 * @param $id
+	 *
+	 * @return mixed|Model
+	 */
+	public function find( $id )
+	{
 		//todo test
-	    $response = $this->request->doRequest('get', "/{$this->entity}/{$id}");
+		$response = $this->request->doRequest( 'get', "/{$this->entity}/{$id}" );
 
-        // todo check for errors and such
+		// todo check for errors and such
 
-        $responseData = $response->throw()->json();
+		$responseData = $response->throw()->json();
 
-        return new $this->model($this->request, $responseData);
-    }
+		return new $this->model( $this->request, $responseData );
+	}
 
-    /**
-     * @param array $filters
-     *
-     * @return \Illuminate\Support\Collection|Model[]
-     */
-    public function get()
-    {
-	    $response = $this->request->doRequest('get', "/{$this->entity}");
+	/**
+	 * @param array $filters
+	 *
+	 * @return \Illuminate\Support\Collection|Model[]
+	 */
+	public function get()
+	{
+		$response = $this->request->doRequest( 'get', "/{$this->entity}" );
 
-        // todo check for errors and such
+		// todo check for errors and such
 
-        $responseData = $response->throw()->json();
+		$responseData = $response->throw()->json();
 
-        return $responseData;
-    }
+		return $responseData;
+	}
 }

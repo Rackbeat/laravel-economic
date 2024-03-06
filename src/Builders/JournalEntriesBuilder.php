@@ -10,14 +10,14 @@ use LasseRafn\Economic\Utils\Request;
 
 class JournalEntriesBuilder extends Builder
 {
-    protected $entity = 'journals/:journalNumber/entries';
-    protected $model = JournalEntries::class;
+	protected $entity = 'journals/:journalNumber/entries';
+	protected $model  = JournalEntries::class;
 
 
-    public function __construct(Request $request, $journalNumber)
-    {
-        $this->entity = str_replace(':journalNumber', $journalNumber, $this->entity);
+	public function __construct( Request $request, $journalNumber )
+	{
+		$this->entity = str_replace( ':journalNumber', $journalNumber, $this->entity );
 
-        parent::__construct($request);
-    }
+		parent::__construct( $request );
+	}
 }

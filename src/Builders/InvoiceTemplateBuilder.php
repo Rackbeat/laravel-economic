@@ -7,26 +7,26 @@ use LasseRafn\Economic\Utils\Request;
 
 class InvoiceTemplateBuilder extends Builder
 {
-    protected $entity = 'customers/:customerNumber/templates/invoice';
-    protected $model = InvoiceTemplate::class;
+	protected $entity = 'customers/:customerNumber/templates/invoice';
+	protected $model  = InvoiceTemplate::class;
 
-    public function __construct(Request $request, $customerNumber)
-    {
-        $this->entity = str_replace(':customerNumber', $customerNumber, $this->entity);
+	public function __construct( Request $request, $customerNumber )
+	{
+		$this->entity = str_replace( ':customerNumber', $customerNumber, $this->entity );
 
-        parent::__construct($request);
-    }
+		parent::__construct( $request );
+	}
 
-    public function get($filters = [])
-    {
-        return $this->request->handleWithExceptions(function () {
-	        $response = $this->request->doRequest('get', "/{$this->entity}");
+	public function get( $filters = [] )
+	{
+		return $this->request->handleWithExceptions( function () {
+			$response = $this->request->doRequest( 'get', "/{$this->entity}" );
 
-            $responseData = $response->throw()->json();
+			$responseData = $response->throw()->json();
 
-            $model = new $this->model($this->request, $responseData);
+			$model = new $this->model( $this->request, $responseData );
 
-            return $model;
-        });
-    }
+			return $model;
+		} );
+	}
 }

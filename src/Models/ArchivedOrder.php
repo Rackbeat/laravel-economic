@@ -6,8 +6,8 @@ use LasseRafn\Economic\Utils\Model;
 
 class ArchivedOrder extends Model
 {
-    public    $orderNumber;
-    public    $name;
-    protected $entity     = ' /orders/archived';
-    protected $primaryKey = 'orderNumber';
+	public    $orderNumber;
+	public    $name;
+	protected $entity     = ' /orders/archived';
+	protected $primaryKey = 'orderNumber';
 }

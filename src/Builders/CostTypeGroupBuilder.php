@@ -7,5 +7,5 @@ use LasseRafn\Economic\Models\CostTypeGroup;
 class CostTypeGroupBuilder extends NewRestBuilder
 {
 	protected $entity = 'costtypegroups';
-	protected $model = CostTypeGroup::class;
+	protected $model  = CostTypeGroup::class;
 }

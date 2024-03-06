@@ -6,10 +6,10 @@ use LasseRafn\Economic\Utils\Model;
 
 class Journal extends Model
 {
-    protected $entity = 'journals';
-    protected $primaryKey = 'journalNumber';
+	protected $entity     = 'journals';
+	protected $primaryKey = 'journalNumber';
 
-    public $journalNumber;
-    public $entries;
-    public $name;
+	public $journalNumber;
+	public $entries;
+	public $name;
 }
