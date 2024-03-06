@@ -258,11 +258,9 @@ class BaseBuilder
         });
     }
 
-    protected function getRequest($page, $pageSize, $urlFilters): \stdClass
+    protected function getRequest($page, $pageSize, $urlFilters)
     {
-        $response = $this->request->doRequest('get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}");
-
-        return json_decode($response->getBody()->getContents());
+        return $this->request->doRequest('get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}")->throw()->json();
     }
 
     public function parseResponse($responseData, \Illuminate\Support\Collection $items): \Illuminate\Support\Collection
