@@ -9,16 +9,16 @@ use LasseRafn\Economic\Services\QueryGeneratorService;
 
 class BaseBuilder
 {
-    protected $request;
-    protected $entity;
+	protected $request;
+	protected $entity;
 
-    /** @var Model */
-    protected $model;
+	/** @var Model */
+	protected $model;
 
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
+	public function __construct( Request $request )
+	{
+		$this->request = $request;
+	}
 
 	/**
 	 * @param $id
@@ -27,40 +27,41 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function find($id)
-    {
-        return $this->request->handleWithExceptions(function () use ($id) {
-            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}/{$id}");
+	public function find( $id )
+	{
+		return $this->request->handleWithExceptions( function () use ( $id ) {
+			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}/{$id}" );
 
-            $responseData = json_decode($response->getBody()->getContents());
-		
-            $response->getBody()->close();
-            return new $this->model($this->request, $responseData);
-        });
-    }
+			$responseData = json_decode( $response->getBody()->getContents() );
+
+			$response->getBody()->close();
+
+			return new $this->model( $this->request, $responseData );
+		} );
+	}
 
 	/**
 	 * @return Model
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function first()
-    {
-        return $this->request->handleWithExceptions(function () {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1");
+	public function first()
+	{
+		return $this->request->handleWithExceptions( function () {
+			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1" );
 
-            $responseData = json_decode($response->getBody()->getContents());
-            $fetchedItems = $responseData->collection;
-		
-            $response->getBody()->close();
+			$responseData = json_decode( $response->getBody()->getContents() );
+			$fetchedItems = $responseData->collection;
 
-            if (count($fetchedItems) === 0) {
-                return;
-            }
+			$response->getBody()->close();
 
-            return new $this->model($this->request, $fetchedItems[0]);
-        });
-    }
+			if ( count( $fetchedItems ) === 0 ) {
+				return;
+			}
+
+			return new $this->model( $this->request, $fetchedItems[0] );
+		} );
+	}
 
 	/**
 	 * @param array $filters
@@ -69,30 +70,30 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function get($filters = [], $sorting = [])
-    {
-	    $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting = []);
+	public function get( $filters = [], $sorting = [] )
+	{
+		$urlQuery = QueryGeneratorService::generateQuery( $filters, $sorting = [] );
 
-        return $this->request->handleWithExceptions(function () use ($urlQuery) {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}{$urlQuery}");
+		return $this->request->handleWithExceptions( function () use ( $urlQuery ) {
+			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}{$urlQuery}" );
 
-            $responseData = json_decode($response->getBody()->getContents());
+			$responseData = json_decode( $response->getBody()->getContents() );
 
-            $fetchedItems = $responseData->collection;
+			$fetchedItems = $responseData->collection;
 
-            $items = collect([]);
-            foreach ($fetchedItems as $item) {
-                /** @var Model $model */
-                $model = new $this->model($this->request, $item);
+			$items = collect( [] );
+			foreach ( $fetchedItems as $item ) {
+				/** @var Model $model */
+				$model = new $this->model( $this->request, $item );
 
-                $items->push($model);
-            }
-		
-            $response->getBody()->close();
+				$items->push( $model );
+			}
 
-            return $items;
-        });
-    }
+			$response->getBody()->close();
+
+			return $items;
+		} );
+	}
 
 	/**
 	 * @param int   $page
@@ -103,30 +104,30 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function getByPage($page = 0, $pageSize = 500, $filters = [])
-    {
-        $items = collect([]);
+	public function getByPage( $page = 0, $pageSize = 500, $filters = [] )
+	{
+		$items = collect( [] );
 
-        $urlQuery = QueryGeneratorService::generateQuery($filters, [] ,true);
+		$urlQuery = QueryGeneratorService::generateQuery( $filters, [], true );
 
-        return $this->request->handleWithExceptions(function () use ($pageSize, &$page, &$items, $urlQuery) {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
+		return $this->request->handleWithExceptions( function () use ( $pageSize, &$page, &$items, $urlQuery ) {
+			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}" );
 
-            $responseData = json_decode($response->getBody()->getContents());
-            $fetchedItems = $responseData->collection;
+			$responseData = json_decode( $response->getBody()->getContents() );
+			$fetchedItems = $responseData->collection;
 
-            foreach ($fetchedItems as $item) {
-                /** @var Model $model */
-                $model = new $this->model($this->request, $item);
+			foreach ( $fetchedItems as $item ) {
+				/** @var Model $model */
+				$model = new $this->model( $this->request, $item );
 
-                $items->push($model);
-            }
-		
-            $response->getBody()->close();
+				$items->push( $model );
+			}
 
-            return $items;
-        });
-    }
+			$response->getBody()->close();
+
+			return $items;
+		} );
+	}
 
 	/**
 	 * @param array $filters
@@ -136,44 +137,44 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function all($filters = [], $sorting = [], $pageSize = 100)
-    {
-        $page = 0;
-        $hasMore = true;
-        $items = collect([]);
+	public function all( $filters = [], $sorting = [], $pageSize = 100 )
+	{
+		$page    = 0;
+		$hasMore = true;
+		$items   = collect( [] );
 
-	    $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting, true);
+		$urlQuery = QueryGeneratorService::generateQuery( $filters, $sorting, true );
 
-        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$page, &$items, $urlQuery) {
-            while ($hasMore) {
-	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
-                $responseData = json_decode($response->getBody()->getContents());
-                
-                $fetchedItems = empty($this->rest_version) ? $responseData->collection : $responseData;
-		    
-            	$response->getBody()->close();
+		return $this->request->handleWithExceptions( function () use ( &$hasMore, $pageSize, &$page, &$items, $urlQuery ) {
+			while ( $hasMore ) {
+				$response     = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}" );
+				$responseData = json_decode( $response->getBody()->getContents() );
 
-                foreach ($fetchedItems as $item) {
-                    /** @var Model $model */
-                    $model = new $this->model($this->request, $item);
+				$fetchedItems = empty( $this->rest_version ) ? $responseData->collection : $responseData;
 
-                    $items->push($model);
-                }
+				$response->getBody()->close();
 
-	            // If we got fewer items returned than requested, it means we reached page limit
-	            // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
-	            // Since e-conomic max pageSize is 1000.
-	            if (count($fetchedItems) < min($pageSize, 1000)) {
-		            $hasMore = false;
+				foreach ( $fetchedItems as $item ) {
+					/** @var Model $model */
+					$model = new $this->model( $this->request, $item );
+
+					$items->push( $model );
+				}
+
+				// If we got fewer items returned than requested, it means we reached page limit
+				// Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+				// Since e-conomic max pageSize is 1000.
+				if ( count( $fetchedItems ) < min( $pageSize, 1000 ) ) {
+					$hasMore = false;
 					break;
-	            }
+				}
 
-                $page++;
-            }
+				$page++;
+			}
 
-            return $items;
-        });
-    }
+			return $items;
+		} );
+	}
 
 	/**
 	 * @param $data
@@ -182,81 +183,81 @@ class BaseBuilder
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
-    public function create($data)
-    {
-    	$data = $this->request->formatData($data);
+	public function create( $data )
+	{
+		$data = $this->request->formatData( $data );
 
-        return $this->request->handleWithExceptions(function () use ($data) {
-	        $response = $this->request->doRequest('post', "{$this->rest_version}/{$this->entity}",[
-		        'json' => $data,
-	        ]);
+		return $this->request->handleWithExceptions( function () use ( $data ) {
+			$response = $this->request->doRequest( 'post', "{$this->rest_version}/{$this->entity}", [
+				'json' => $data,
+			] );
 
-            $responseData = json_decode($response->getBody()->getContents());
-		    
-            	$response->getBody()->close();
+			$responseData = json_decode( $response->getBody()->getContents() );
 
-            return new $this->model($this->request, $responseData);
-        });
-    }
+			$response->getBody()->close();
 
-    /**
-     * @param array $filters
-     * @param int   $pageSize
-     *
-     * @return \Generator
-     * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
-     * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
-     */
-    public function allWithGenerators($filters = [], $sorting = [], $pageSize = 500)
-    {
-        $page = 0;
-        $hasMore = true;
-        $items = collect([]);
+			return new $this->model( $this->request, $responseData );
+		} );
+	}
 
-        $urlQuery = QueryGeneratorService::generateQuery($filters, $sorting, true);
+	/**
+	 * @param array $filters
+	 * @param int   $pageSize
+	 *
+	 * @return \Generator
+	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
+	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
+	 */
+	public function allWithGenerators( $filters = [], $sorting = [], $pageSize = 500 )
+	{
+		$page    = 0;
+		$hasMore = true;
+		$items   = collect( [] );
 
-        return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$items, &$page, $urlQuery) {
-            while ($hasMore) {
-                $responseData = $this->getRequest($page, $pageSize, $urlQuery);
+		$urlQuery = QueryGeneratorService::generateQuery( $filters, $sorting, true );
 
-                $items = $this->parseResponse($responseData, $items);
+		return $this->request->handleWithExceptions( function () use ( &$hasMore, $pageSize, &$items, &$page, $urlQuery ) {
+			while ( $hasMore ) {
+				$responseData = $this->getRequest( $page, $pageSize, $urlQuery );
 
-	            foreach ($items as $result){
-		            yield $result;
-	            }
+				$items = $this->parseResponse( $responseData, $items );
 
-                // If we got fewer items returned than requested, it means we reached page limit
-                // Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
-                // Since e-conomic max pageSize is 1000.
-                if (count($responseData->collection) < min($pageSize, 1000)) {
-                    $hasMore = false;
+				foreach ( $items as $result ) {
+					yield $result;
+				}
 
-                    break;
-                }
+				// If we got fewer items returned than requested, it means we reached page limit
+				// Using min() to ensure $pageSize > 1000 doesn't cause infinite loops
+				// Since e-conomic max pageSize is 1000.
+				if ( count( $responseData->collection ) < min( $pageSize, 1000 ) ) {
+					$hasMore = false;
 
-                $page++;
-            }
+					break;
+				}
 
-            return $items;
-        });
-    }
+				$page++;
+			}
 
-    protected function getRequest($page, $pageSize, $urlFilters): \stdClass
-    {
-        $response = $this->request->doRequest('get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}");
+			return $items;
+		} );
+	}
 
-        return json_decode($response->getBody()->getContents());
-    }
+	protected function getRequest( $page, $pageSize, $urlFilters ): \stdClass
+	{
+		$response = $this->request->doRequest( 'get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}" );
 
-    public function parseResponse($responseData, \Illuminate\Support\Collection $items): \Illuminate\Support\Collection
-    {
+		return json_decode( $response->getBody()->getContents() );
+	}
 
-        foreach ($responseData->collection as $item) {
-            $model = new $this->model($this->request, $item);
+	public function parseResponse( $responseData, \Illuminate\Support\Collection $items ): \Illuminate\Support\Collection
+	{
 
-            $items->push($model);
-        }
+		foreach ( $responseData->collection as $item ) {
+			$model = new $this->model( $this->request, $item );
 
-        return $items;
-    }
+			$items->push( $model );
+		}
+
+		return $items;
+	}
 }

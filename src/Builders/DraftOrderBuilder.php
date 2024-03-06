@@ -6,6 +6,6 @@ use LasseRafn\Economic\Models\DraftOrder;
 
 class DraftOrderBuilder extends Builder
 {
-    protected $entity = 'orders/drafts';
-    protected $model = DraftOrder::class;
+	protected $entity = 'orders/drafts';
+	protected $model  = DraftOrder::class;
 }

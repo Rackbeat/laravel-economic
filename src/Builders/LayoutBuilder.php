@@ -6,6 +6,6 @@ use LasseRafn\Economic\Models\Layout;
 
 class LayoutBuilder extends Builder
 {
-    protected $entity = 'layouts';
-    protected $model = Layout::class;
+	protected $entity = 'layouts';
+	protected $model  = Layout::class;
 }

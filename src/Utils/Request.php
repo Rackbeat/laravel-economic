@@ -15,86 +15,86 @@ class Request
 
 	public $beforeRequestHooks = [];
 
-	public function __construct($agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null, $contentType = 'application/json')
+	public function __construct( $agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null, $contentType = 'application/json' )
 	{
-		
+
 		$data = [
-            'base_uri'        => $baseUri ?? config('economic.request_endpoint'),
-            'headers'         => [
-                'X-AppSecretToken'      => $apiSecret,
-                'X-AgreementGrantToken' => $agreementToken,
-                'Content-Type'          => $contentType,
+			'base_uri'        => $baseUri ?? config( 'economic.request_endpoint' ),
+			'headers'         => [
+				'X-AppSecretToken'      => $apiSecret,
+				'X-AgreementGrantToken' => $agreementToken,
+				'Content-Type'          => $contentType,
 			],
-            'allow_redirects' => ['strict' => true],
+			'allow_redirects' => [ 'strict' => true ],
 
 
-        ];
-		
-        if ($contentType === 'multipart/form-data'){
-            $data["mimeType"] = "multipart/form-data";
-            }
+		];
 
-        $this->curl = new Client($data);
+		if ( $contentType === 'multipart/form-data' ) {
+			$data["mimeType"] = "multipart/form-data";
+		}
+
+		$this->curl      = new Client( $data );
 		$this->stripNull = $stripNull;
 	}
 
-	public function formatData($data)
+	public function formatData( $data )
 	{
-		if ($this->stripNull) {
-			return array_filter($data, static function ($item) { return $item !== null; });
+		if ( $this->stripNull ) {
+			return array_filter( $data, static function ( $item ) { return $item !== null; } );
 		}
 
 		return $data;
 	}
 
-	public function handleWithExceptions($callback)
+	public function handleWithExceptions( $callback )
 	{
 		try {
 			return $callback();
-		} catch (ClientException $exception) {
+		} catch ( ClientException $exception ) {
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();
 
-			if ($exception->hasResponse()) {
+			if ( $exception->hasResponse() ) {
 				$message = $exception->getResponse()->getBody()->getContents();
 				$code    = $exception->getResponse()->getStatusCode();
 			}
 
-			throw new EconomicRequestException($message, $code);
-		} catch (ServerException $exception) {
+			throw new EconomicRequestException( $message, $code );
+		} catch ( ServerException $exception ) {
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();
 
-			if ($exception->hasResponse()) {
+			if ( $exception->hasResponse() ) {
 				$message = $exception->getResponse()->getBody()->getContents();
 				$code    = $exception->getResponse()->getStatusCode();
 			}
 
-			throw new EconomicRequestException($message, $code);
-		} catch (\Exception $exception) {
+			throw new EconomicRequestException( $message, $code );
+		} catch ( \Exception $exception ) {
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();
 
-			throw new EconomicClientException($message, $code);
+			throw new EconomicClientException( $message, $code );
 		}
 	}
 
-	public function doRequest($method, $path, $options = [])
+	public function doRequest( $method, $path, $options = [] )
 	{
 		try {
-			foreach ($this->beforeRequestHooks as $hook) {
-				$hook($method, $path, $options);
+			foreach ( $this->beforeRequestHooks as $hook ) {
+				$hook( $method, $path, $options );
 			}
-		} catch (\Throwable $exception) {
+		} catch ( \Throwable $exception ) {
 			// silence hooks!!!
 		}
 
-		if (filter_var(config('economic.retry_server_exceptions.enabled'), FILTER_VALIDATE_BOOLEAN)) {
-			return retry(config('economic.retry_server_exceptions.retries', 3), function () use ($method, $path, $options) {
-				return $this->curl->{$method}($path, $options);
-			}, config('economic.retry_server_exceptions.timeout_ms', 10000), function (\Throwable $throwable) { return $throwable->getCode() >= 500 && $throwable->getCode() <= 599; });
+		if ( filter_var( config( 'economic.retry_server_exceptions.enabled' ), FILTER_VALIDATE_BOOLEAN ) ) {
+			return retry( config( 'economic.retry_server_exceptions.retries', 3 ), function () use ( $method, $path, $options ) {
+				return $this->curl->{$method}( $path, $options );
+			}, config( 'economic.retry_server_exceptions.timeout_ms', 10000 ), function ( \Throwable $throwable ) { return $throwable->getCode() >= 500 && $throwable->getCode() <= 599; } );
 		}
 
-		return $this->curl->{$method}($path, $options);
+		return $this->curl->{$method}( $path, $options );
 	}
 }
