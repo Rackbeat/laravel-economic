@@ -46,9 +46,9 @@ use LasseRafn\Economic\Utils\Request;
 
 class Economic
 {
-	protected $request;
+	protected ?Request $request;
 
-	protected $newApiRequest;
+	protected ?Request $newApiRequest;
 
 	protected $agreement;
 
@@ -314,8 +314,9 @@ class Economic
 		return new ProjectGroupBuilder( $this->newApiRequest );
 	}
 
-* @return CostTypeBuilder()|Builder
-*/
+	/*
+	   * @return CostTypeBuilder|Builder
+	   */
 	public function cost_types()
 	{
 		return new CostTypeBuilder( $this->newApiRequest );
@@ -451,7 +452,7 @@ class Economic
 
 	public function downloadInvoice( $directUrl )
 	{
-		return $this->request->doRequest( 'get', $directUrl )->getBody()->getContents();
+		return $this->request->doRequest( 'get', $directUrl )->body();
 	}
 
 	protected function initRequest( $baseUri = null )

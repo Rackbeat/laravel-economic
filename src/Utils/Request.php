@@ -4,6 +4,9 @@ namespace LasseRafn\Economic\Utils;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 use LasseRafn\Economic\Exceptions\EconomicClientException;
 use LasseRafn\Economic\Exceptions\EconomicRequestException;
 
@@ -17,24 +20,17 @@ class Request
 
 	public function __construct( $agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null, $contentType = 'application/json' )
 	{
-
-		$data = [
-			'base_uri'        => $baseUri ?? config( 'economic.request_endpoint' ),
-			'headers'         => [
-				'X-AppSecretToken'      => $apiSecret,
-				'X-AgreementGrantToken' => $agreementToken,
-				'Content-Type'          => $contentType,
-			],
-			'allow_redirects' => [ 'strict' => true ],
-
-
-		];
+		$this->curl = Http::withHeaders( [
+			'X-AppSecretToken'      => $apiSecret,
+			'X-AgreementGrantToken' => $agreementToken,
+			'Content-Type'          => $contentType,
+		] )->baseUrl( $baseUri ?? config( 'economic.request_endpoint' ) )
+		                  ->withoutRedirecting();
 
 		if ( $contentType === 'multipart/form-data' ) {
-			$data["mimeType"] = "multipart/form-data";
+			$this->curl->asForm();
 		}
 
-		$this->curl      = new Client( $data );
 		$this->stripNull = $stripNull;
 	}
 
@@ -51,23 +47,13 @@ class Request
 	{
 		try {
 			return $callback();
-		} catch ( ClientException $exception ) {
+		} catch ( RequestException $exception ) {
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();
 
-			if ( $exception->hasResponse() ) {
-				$message = $exception->getResponse()->getBody()->getContents();
-				$code    = $exception->getResponse()->getStatusCode();
-			}
-
-			throw new EconomicRequestException( $message, $code );
-		} catch ( ServerException $exception ) {
-			$message = $exception->getMessage();
-			$code    = $exception->getCode();
-
-			if ( $exception->hasResponse() ) {
-				$message = $exception->getResponse()->getBody()->getContents();
-				$code    = $exception->getResponse()->getStatusCode();
+			if ( $exception->response ) {
+				$message = $exception->response->body();
+				$code    = $exception->response->status();
 			}
 
 			throw new EconomicRequestException( $message, $code );
@@ -79,6 +65,14 @@ class Request
 		}
 	}
 
+	/**
+	 * @param $method
+	 * @param $path
+	 * @param $options
+	 *
+	 * @return Response
+	 * @throws \Exception
+	 */
 	public function doRequest( $method, $path, $options = [] )
 	{
 		try {

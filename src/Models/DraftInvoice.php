@@ -4,6 +4,7 @@ namespace LasseRafn\Economic\Models;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use Illuminate\Http\Client\RequestException;
 use LasseRafn\Economic\Exceptions\EconomicClientException;
 use LasseRafn\Economic\Exceptions\EconomicRequestException;
 use LasseRafn\Economic\Utils\Model;
@@ -121,24 +122,14 @@ class DraftInvoice extends Model
 		try {
 			$responseData = $this->request->doRequest( 'post', 'invoices/booked', [
 				'json' => $data,
-			] )->getBody()->getContents();
-		} catch ( ClientException $exception ) {
+			] )->json();
+		} catch ( RequestException $exception ) {
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();
 
-			if ( $exception->hasResponse() ) {
-				$message = $exception->getResponse()->getBody()->getContents();
-				$code    = $exception->getResponse()->getStatusCode();
-			}
-
-			throw new EconomicRequestException( $message, $code );
-		} catch ( ServerException $exception ) {
-			$message = $exception->getMessage();
-			$code    = $exception->getCode();
-
-			if ( $exception->hasResponse() ) {
-				$message = $exception->getResponse()->getBody()->getContents();
-				$code    = $exception->getResponse()->getStatusCode();
+			if ( $exception->response ) {
+				$message = $exception->response->body();
+				$code    = $exception->response->status();
 			}
 
 			throw new EconomicRequestException( $message, $code );
@@ -148,8 +139,6 @@ class DraftInvoice extends Model
 
 			throw new EconomicClientException( $message, $code );
 		}
-
-		$responseData = json_decode( $responseData );
 
 		return new BookedInvoice( $this->request, $responseData );
 	}
