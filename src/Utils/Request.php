@@ -18,13 +18,18 @@ class Request
 
 	public $beforeRequestHooks = [];
 
-	public function __construct($agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null, $contentType = 'application/json')
+	public function __construct( $agreementToken = '', $apiSecret = '', $stripNull = false, $baseUri = null, $contentType = 'application/json' )
 	{
 		$this->curl = Http::withHeaders( [
 			'X-AppSecretToken'      => $apiSecret,
 			'X-AgreementGrantToken' => $agreementToken,
 			'Content-Type'          => $contentType,
-		])->baseUrl( $baseUri ?? config( 'economic.request_endpoint' ) )->withoutRedirecting();
+		] )->baseUrl( $baseUri ?? config( 'economic.request_endpoint' ) )
+		                  ->withoutRedirecting();
+
+		if ( $contentType === 'multipart/form-data' ) {
+			$this->curl->asForm();
+		}
 
 		$this->stripNull = $stripNull;
 	}
