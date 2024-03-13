@@ -46,9 +46,9 @@ use LasseRafn\Economic\Utils\Request;
 
 class Economic
 {
-	protected ?Request $request;
+	protected $request;
 
-	protected ?Request $newApiRequest;
+	protected $newApiRequest;
 
 	protected $agreement;
 
@@ -452,7 +452,7 @@ class Economic
 
 	public function downloadInvoice( $directUrl )
 	{
-		return $this->request->doRequest( 'get', $directUrl )->body();
+		return $this->request->doRequest( 'get', $directUrl )->getBody()->getContents();
 	}
 
 	protected function initRequest( $baseUri = null )

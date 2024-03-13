@@ -4,7 +4,6 @@ namespace LasseRafn\Economic\Models;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
-use Illuminate\Http\Client\RequestException;
 use LasseRafn\Economic\Exceptions\EconomicClientException;
 use LasseRafn\Economic\Exceptions\EconomicRequestException;
 use LasseRafn\Economic\Utils\Model;
@@ -71,19 +70,19 @@ class DraftInvoice extends Model
 	 * @param int    $quantity
 	 * @param        $product
 	 */
-	public function addLine( $description, $quantity, $product )
+	public function addLine($description, $quantity, $product)
 	{
 		$line = new \stdClass();
 
 		$line->description = $description;
-		$line->quantity    = (float) number_format( $quantity, 2 );
+		$line->quantity    = (float) number_format($quantity, 2);
 		$line->product     = $product;
-		if ( $product !== null ) {
+		if ($product !== null) {
 			$line->unitNetPrice   = $product->salesPrice;
 			$line->unitCostPrice  = $product->costPrice;
 			$line->totalNetAmount = $quantity * $product->salesPrice;
 
-			if ( isset( $product->unit ) ) {
+			if (isset($product->unit)) {
 				$line->unit = $product->unit;
 			}
 		}
@@ -102,7 +101,7 @@ class DraftInvoice extends Model
 	 *
 	 * @return BookedInvoice
 	 */
-	public function book( $number = null, $sendBy = null )
+	public function book($number = null, $sendBy = null)
 	{
 		$data = [
 			'draftInvoice' => [
@@ -111,33 +110,48 @@ class DraftInvoice extends Model
 			],
 		];
 
-		if ( $number !== null ) {
+		if ($number !== null) {
 			$data['bookWithNumber'] = $number;
 		}
 
-		if ( $sendBy !== null ) {
-			$data['sendBy'] = strtolower( $sendBy );
+		if ($sendBy !== null) {
+			$data['sendBy'] = strtolower($sendBy);
 		}
 
 		try {
-			$responseData = $this->request->doRequest( 'post', 'invoices/booked', $data )->object();
-		} catch ( RequestException $exception ) {
+			$responseData = $this->request->doRequest('post', 'invoices/booked', [
+				'json' => $data,
+			])->getBody()->getContents();
+		} catch (ClientException $exception) {
+
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();
 
-			if ( $exception->response ) {
-				$message = $exception->response->body();
-				$code    = $exception->response->status();
+			if ($exception->hasResponse()) {
+				$message = $exception->getResponse()->getBody()->getContents();
+				$code    = $exception->getResponse()->getStatusCode();
 			}
 
-			throw new EconomicRequestException( $message, $code );
-		} catch ( \Exception $exception ) {
+			throw new EconomicRequestException($message, $code);
+		} catch (ServerException $exception) {
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();
 
-			throw new EconomicClientException( $message, $code );
+			if ($exception->hasResponse()) {
+				$message = $exception->getResponse()->getBody()->getContents();
+				$code    = $exception->getResponse()->getStatusCode();
+			}
+
+			throw new EconomicRequestException($message, $code);
+		} catch (\Exception $exception) {
+			$message = $exception->getMessage();
+			$code    = $exception->getCode();
+
+			throw new EconomicClientException($message, $code);
 		}
 
-		return new BookedInvoice( $this->request, $responseData );
+		$responseData = json_decode($responseData);
+
+		return new BookedInvoice($this->request, $responseData);
 	}
 }
