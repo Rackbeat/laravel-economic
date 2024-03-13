@@ -102,7 +102,7 @@ class Model
 		return $this->request->handleWithExceptions( function () use ( $data ) {
 			$response = $this->request->doRequest( 'put', $this->getUpdateEndpoint(), $data );
 
-			$responseData = $response->throw()->object();
+			$responseData = json_decode( $response->getBody()->getContents() );
 
 			return new $this->modelClass( $this->request, $responseData );
 		} );
