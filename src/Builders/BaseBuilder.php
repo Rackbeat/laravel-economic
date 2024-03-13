@@ -203,7 +203,9 @@ class BaseBuilder
     	$data = $this->request->formatData($data);
 
         return $this->request->handleWithExceptions(function () use ($data) {
-	        $response = $this->request->doRequest('post', "{$this->rest_version}/{$this->entity}", $data);
+	        $response = $this->request->doRequest('post', "{$this->rest_version}/{$this->entity}", [
+		     'json' => $data
+	      	]);
 
 		$responseData = json_decode($response->getBody()->getContents());
 
