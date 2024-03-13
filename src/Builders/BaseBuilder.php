@@ -71,11 +71,11 @@ class BaseBuilder
     public function last($sortByField)
     {
         return $this->request->handleWithExceptions(function () use($sortByField) {
-	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort=-{$sortByField}");
-
-			$fetchedItems = $response->throw()->json( 'collection' );
-
-			$response->close();
+		$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort=-{$sortByField}");
+	
+		$fetchedItems = $response->throw()->json( 'collection' );
+	
+		$response->close();
 
             if (count($fetchedItems) === 0) {
 				return null;
@@ -204,13 +204,11 @@ class BaseBuilder
     	$data = $this->request->formatData($data);
 
         return $this->request->handleWithExceptions(function () use ($data) {
-	        $response = $this->request->doRequest('post', "{$this->rest_version}/{$this->entity}",[
-		        'json' => $data,
-	        ]);
+	        $response = $this->request->doRequest('post', "{$this->rest_version}/{$this->entity}", $data);
 
-			$responseData = $response->throw()->json();
+		$responseData = $response->throw()->json();
 
-			$response->close();
+		$response->close();
 
             return new $this->model($this->request, $responseData);
         });

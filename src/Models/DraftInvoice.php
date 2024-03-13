@@ -120,9 +120,7 @@ class DraftInvoice extends Model
 		}
 
 		try {
-			$responseData = $this->request->doRequest( 'post', 'invoices/booked', [
-				'json' => $data,
-			] )->json();
+			$responseData = $this->request->doRequest( 'post', 'invoices/booked', $data )->json();
 		} catch ( RequestException $exception ) {
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();

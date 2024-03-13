@@ -25,26 +25,22 @@ class JournalVouchersBuilder extends Builder
 	{
 		$this->entity .= '/' . $accountingYear . '-' . $voucherNumber . '/attachment/file';
 
-		$agreementToken = $this->request->curl->getConfig( 'headers' )['X-AgreementGrantToken'];
-		$apiSecret      = $this->request->curl->getConfig( 'headers' )['X-AppSecretToken'];
+		$agreementToken = $this->request->curl->getOptions()['headers']['X-AgreementGrantToken'];
+		$apiSecret      = $this->request->curl->getOptions()['headers']['X-AppSecretToken'];
 
-		$this->request = new Request( $agreementToken, $apiSecret, false, null, 'multipart/form-data' );
+		return $this->request->handleWithExceptions( function () use ( $pdf, $voucherNumber, $apiSecret, $agreementToken ) {
+			$response = Http::attach(
+				(string) $voucherNumber,
+				$pdf,
+				(string) $voucherNumber . '.pdf'
+			)->withHeaders( [
+				'X-AppSecretToken'      => $apiSecret,
+				'X-AgreementGrantToken' => $agreementToken,
+			] )->post( config( 'economic.request_endpoint' ) . "{$this->rest_version}/{$this->entity}" );
 
-		return $this->request->handleWithExceptions( function () use ( $pdf, $voucherNumber ) {
+			$responseData = $response->throw()->json();
 
-			$response = $this->request->doRequest( 'post', "{$this->rest_version}/{$this->entity}", [
-				'multipart' => [
-					[
-						'name'     => (string) $voucherNumber,
-						'contents' => $pdf,
-						'filename' => (string) $voucherNumber . '.pdf',
-					],
-				],
-			] );
-
-			$responseData = json_decode( $response->getBody()->getContents() );
-
-			$response->getBody()->close();
+			$response->close();
 
 			return new $this->model( $this->request, $responseData );
 		} );
