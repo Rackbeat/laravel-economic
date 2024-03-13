@@ -4,6 +4,7 @@
 namespace LasseRafn\Economic\Builders;
 
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use LasseRafn\Economic\Models\JournalVouchers;
 use LasseRafn\Economic\Utils\Request;
