@@ -39,7 +39,7 @@ class JournalVouchersBuilder extends Builder
 				'X-AgreementGrantToken' => $agreementToken,
 			] )->post( config( 'economic.request_endpoint' ) . "{$this->rest_version}/{$this->entity}" );
 
-			$responseData = $response->throw()->object();
+			$responseData = json_decode($response->getBody()->getContents());
 
 			$response->close();
 

@@ -22,7 +22,7 @@ class AdditionalInventoryDataBuilder extends Builder
 		return $this->request->handleWithExceptions( function () use ( $urlFilters ) {
 			$response = $this->request->doRequest( 'get', "{$this->rest_version}/{$this->entity}{$urlFilters}" );
 
-			return $response->object();
+			return json_decode($response->getBody()->getContents());
 		} );
 	}
 }
