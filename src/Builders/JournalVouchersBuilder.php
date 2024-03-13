@@ -25,26 +25,20 @@ class JournalVouchersBuilder extends Builder
 	{
 		$this->entity .= '/' . $accountingYear . '-' . $voucherNumber . '/attachment/file';
 
-		$agreementToken = $this->request->curl->getConfig( 'headers' )['X-AgreementGrantToken'];
-		$apiSecret      = $this->request->curl->getConfig( 'headers' )['X-AppSecretToken'];
-
-		$this->request = new Request( $agreementToken, $apiSecret, false, null, 'multipart/form-data' );
-
 		return $this->request->handleWithExceptions( function () use ( $pdf, $voucherNumber ) {
-
+			$this->request->curl->asForm(); // convert to multipart form
+			
 			$response = $this->request->doRequest( 'post', "{$this->rest_version}/{$this->entity}", [
-				'multipart' => [
-					[
-						'name'     => (string) $voucherNumber,
-						'contents' => $pdf,
-						'filename' => (string) $voucherNumber . '.pdf',
-					],
+				[
+					'name'     => (string) $voucherNumber,
+					'contents' => $pdf,
+					'filename' => (string) $voucherNumber . '.pdf',
 				],
-			] );
+			]);
 
-			$responseData = json_decode( $response->getBody()->getContents() );
+			$responseData = $response->throw()->json();
 
-			$response->getBody()->close();
+			$response->close();
 
 			return new $this->model( $this->request, $responseData );
 		} );
