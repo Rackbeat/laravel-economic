@@ -26,7 +26,7 @@ class JournalVouchersBuilder extends Builder
 		$this->entity .= '/' . $accountingYear . '-' . $voucherNumber . '/attachment/file';
 
 		return $this->request->handleWithExceptions( function () use ( $pdf, $voucherNumber ) {
-			$this->request->curl->asForm(); // convert to multipart form
+			$this->request->curl->contentType('application/x-www-form-urlencoded'); // so it can handle file upload
 			
 			$response = $this->request->doRequest( 'post', "{$this->rest_version}/{$this->entity}", [
 				[
