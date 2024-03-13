@@ -4,6 +4,7 @@
 namespace LasseRafn\Economic\Builders;
 
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use LasseRafn\Economic\Models\JournalVouchers;
 use LasseRafn\Economic\Utils\Request;
@@ -38,7 +39,7 @@ class JournalVouchersBuilder extends Builder
 				'X-AgreementGrantToken' => $agreementToken,
 			] )->post( config( 'economic.request_endpoint' ) . "{$this->rest_version}/{$this->entity}" );
 
-			$responseData = $response->throw()->json();
+			$responseData = $response->throw()->object();
 
 			$response->close();
 
