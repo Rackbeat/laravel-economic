@@ -34,7 +34,7 @@ class BaseBuilder
 
 			$responseData = json_decode($response->getBody()->getContents());
 
-			$response->close();
+			$response->getBody()->close();
 
             return new $this->model($this->request, $responseData);
         });
@@ -53,7 +53,7 @@ class BaseBuilder
 
 			$fetchedItems = json_decode($response->getBody()->getContents())->collection;
 
-			$response->close();
+			$response->getBody()->close();
 
 			if ( count( $fetchedItems ) === 0 ) {
 				return null;
@@ -75,7 +75,7 @@ class BaseBuilder
 	
 		$fetchedItems = json_decode($response->getBody()->getContents())->collection;
 	
-		$response->close();
+		$response->getBody()->close();
 
             if (count($fetchedItems) === 0) {
 				return null;
@@ -107,7 +107,7 @@ class BaseBuilder
                 $items->push($model);
             }
 
-			$response->close();
+			$response->getBody()->close();
 
             return $items;
         });
@@ -138,7 +138,7 @@ class BaseBuilder
                 $items->push($model);
             }
 
-			$response->close();
+			$response->getBody()->close();
 
             return $items;
         });
@@ -167,7 +167,7 @@ class BaseBuilder
 
 				$fetchedItems = empty( $this->rest_version ) ? json_decode($response->getBody()->getContents())->collection : json_decode($response->getBody()->getContents());
 
-				$response->close();
+				$response->getBody()->close();
 
                 foreach ($fetchedItems as $item) {
                     /** @var Model $model */
@@ -207,7 +207,7 @@ class BaseBuilder
 
 		$responseData = json_decode($response->getBody()->getContents());
 
-		$response->close();
+		$response->getBody()->close();
 
             return new $this->model($this->request, $responseData);
         });
