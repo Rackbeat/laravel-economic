@@ -32,7 +32,7 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use ($id) {
             $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}/{$id}");
 
-			$responseData = $response->throw()->object();
+			$responseData = json_decode($response->getBody()->getContents());
 
 			$response->close();
 
@@ -51,7 +51,7 @@ class BaseBuilder
 		return $this->request->handleWithExceptions( function () use($sortByField) {
 			$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort={$sortByField}");
 
-			$fetchedItems = $response->throw()->object()->collection;
+			$fetchedItems = json_decode($response->getBody()->getContents())->collection;
 
 			$response->close();
 
@@ -73,7 +73,7 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use($sortByField) {
 		$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort=-{$sortByField}");
 	
-		$fetchedItems = $response->throw()->object()->collection;
+		$fetchedItems = json_decode($response->getBody()->getContents())->collection;
 	
 		$response->close();
 
@@ -100,7 +100,7 @@ class BaseBuilder
 	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}{$urlQuery}");
 
             $items = collect([]);
-			foreach ( $response->throw()->object()->collection as $item ) {
+			foreach ( json_decode($response->getBody()->getContents())->collection as $item ) {
                 /** @var Model $model */
                 $model = new $this->model($this->request, $item);
 
@@ -131,7 +131,7 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use ($pageSize, &$page, &$items, $urlQuery) {
 	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
 
-			foreach ( $response->throw()->object()->collection as $item ) {
+			foreach ( json_decode($response->getBody()->getContents())->collection as $item ) {
                 /** @var Model $model */
                 $model = new $this->model($this->request, $item);
 
@@ -164,9 +164,8 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$page, &$items, $urlQuery) {
             while ($hasMore) {
 	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
-				$response->throw();
 
-				$fetchedItems = empty( $this->rest_version ) ? $response->object()->collection : $response->object();
+				$fetchedItems = empty( $this->rest_version ) ? json_decode($response->getBody()->getContents())->collection : json_decode($response->getBody()->getContents());
 
 				$response->close();
 
@@ -206,7 +205,7 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use ($data) {
 	        $response = $this->request->doRequest('post', "{$this->rest_version}/{$this->entity}", $data);
 
-		$responseData = $response->throw()->object();
+		$responseData = json_decode($response->getBody()->getContents());
 
 		$response->close();
 
@@ -258,9 +257,8 @@ class BaseBuilder
 
     protected function getRequest($page, $pageSize, $urlFilters)
     {
-        return $this->request->doRequest('get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}")
-                             ->throw()
-                             ->object();
+        $response =  $this->request->doRequest('get', "/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlFilters}");
+        return json_decode($response->getBody()->getContents());
     }
 
     public function parseResponse($responseData, \Illuminate\Support\Collection $items): \Illuminate\Support\Collection
