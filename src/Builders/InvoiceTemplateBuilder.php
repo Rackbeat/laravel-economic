@@ -22,7 +22,7 @@ class InvoiceTemplateBuilder extends Builder
 		return $this->request->handleWithExceptions( function () {
 			$response = $this->request->doRequest( 'get', "/{$this->entity}" );
 
-			$responseData = $response->throw()->json();
+			$responseData = $response->throw()->object();
 
 			$model = new $this->model( $this->request, $responseData );
 

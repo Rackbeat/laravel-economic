@@ -30,7 +30,7 @@ class SingleBuilder
 
 		// todo check for errors and such
 
-		$responseData = $response->throw()->json();
+		$responseData = $response->throw()->object();
 
 		return new $this->model( $this->request, $responseData );
 	}
@@ -46,7 +46,7 @@ class SingleBuilder
 
 		// todo check for errors and such
 
-		$responseData = $response->throw()->json();
+		$responseData = $response->throw()->object();
 
 		return $responseData;
 	}
