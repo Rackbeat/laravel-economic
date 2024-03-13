@@ -104,7 +104,7 @@ class Model
 				'json' => $data,
 			] );
 
-			$responseData = $response->throw()->json();
+			$responseData = json_decode( $response->getBody()->getContents() );
 
 			return new $this->modelClass( $this->request, $responseData );
 		} );
