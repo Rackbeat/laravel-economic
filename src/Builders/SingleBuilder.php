@@ -32,6 +32,7 @@ class SingleBuilder
 
 		$responseData = json_decode( $response->getBody()->getContents() );
 
+
 		return new $this->model( $this->request, $responseData );
 	}
 

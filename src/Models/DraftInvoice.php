@@ -123,6 +123,7 @@ class DraftInvoice extends Model
 				'json' => $data,
 			])->getBody()->getContents();
 		} catch (ClientException $exception) {
+
 			$message = $exception->getMessage();
 			$code    = $exception->getCode();
 

@@ -100,9 +100,7 @@ class Model
 		$data = $this->request->formatData( $data );
 
 		return $this->request->handleWithExceptions( function () use ( $data ) {
-			$response = $this->request->doRequest( 'put', $this->getUpdateEndpoint(), [
-				'json' => $data,
-			] );
+			$response = $this->request->doRequest( 'put', $this->getUpdateEndpoint(), $data );
 
 			$responseData = json_decode( $response->getBody()->getContents() );
 
