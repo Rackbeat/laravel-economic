@@ -25,16 +25,18 @@ class JournalVouchersBuilder extends Builder
 	{
 		$this->entity .= '/' . $accountingYear . '-' . $voucherNumber . '/attachment/file';
 
-		return $this->request->handleWithExceptions( function () use ( $pdf, $voucherNumber ) {
-			$this->request->curl->contentType('application/x-www-form-urlencoded'); // so it can handle file upload
-			
-			$response = $this->request->doRequest( 'post', "{$this->rest_version}/{$this->entity}", [
-				[
-					'name'     => (string) $voucherNumber,
-					'contents' => $pdf,
-					'filename' => (string) $voucherNumber . '.pdf',
-				],
-			]);
+		$agreementToken = $this->request->curl->getOptions()['headers']['X-AgreementGrantToken'];
+		$apiSecret      = $this->request->curl->getOptions()['headers']['X-AppSecretToken'];
+
+		return $this->request->handleWithExceptions( function () use ( $pdf, $voucherNumber, $apiSecret, $agreementToken ) {
+			$response = Http::attach(
+				(string) $voucherNumber,
+				$pdf,
+				(string) $voucherNumber . '.pdf'
+			)->withHeaders( [
+				'X-AppSecretToken'      => $apiSecret,
+				'X-AgreementGrantToken' => $agreementToken,
+			] )->post( config( 'economic.request_endpoint' ) . "{$this->rest_version}/{$this->entity}" );
 
 			$responseData = $response->throw()->json();
 
