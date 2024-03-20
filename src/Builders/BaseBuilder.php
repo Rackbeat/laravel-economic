@@ -235,6 +235,11 @@ class BaseBuilder
             while ($hasMore) {
                 $responseData = $this->getRequest($page, $pageSize, $urlQuery);
 
+	 	// reset items list for next page, as the parseResponse method 
+		// appends to the $items list. If we don't do this (and don't change the method)
+		// it would mean that $items keep accumulating and looping same entries
+		$items = collect([]);
+		    
                 $items = $this->parseResponse($responseData, $items);
 
 	            foreach ($items as $result){
