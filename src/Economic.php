@@ -230,7 +230,7 @@ class Economic
 	/**
 	 * @return VatAccountBuilder|Builder
 	 */
-	public function vatTypes()
+	public function vatAccounts()
 	{
 		return new VatAccountBuilder( $this->request );
 	}
