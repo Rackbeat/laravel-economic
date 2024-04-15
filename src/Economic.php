@@ -226,9 +226,17 @@ class Economic
 	{
 		return new VatTypeBuilder( $this->request );
 	}
+	
+	/**
+	 * @return VatAccountBuilder|Builder
+	 */
+	public function vatTypes()
+	{
+		return new VatAccountBuilder( $this->request );
+	}
 
 	/**
-	 * @return VatZoneBuilder|Builder
+	 * @return PaymentTermBuilder|Builder
 	 */
 	public function paymentTerms()
 	{
