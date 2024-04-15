@@ -18,14 +18,14 @@ class VatAccount extends Model
 	public string $self;
 
 	  public function setAccountAttribute($data) {
-	    $this->account = new Account($this->request, $data);
+	    return new Account($this->request, $data);
 	  }
 	
 	  public function setContraAccountAttribute($data) {
-	    $this->contraAccount = new Account($this->request, $data);
+	    return new Account($this->request, $data);
 	  }
 	
 	  public function seVatTypeAttribute($data) {
-	    $this->vatType = new VatType($this->request, $data);
+	    return new VatType($this->request, $data);
 	  }
 }
