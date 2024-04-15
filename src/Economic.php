@@ -40,6 +40,7 @@ use LasseRafn\Economic\Builders\UnitBuilder;
 use LasseRafn\Economic\Builders\UserBuilder;
 use LasseRafn\Economic\Builders\VatZoneBuilder;
 use LasseRafn\Economic\Builders\VatTypeBuilder;
+use LasseRafn\Economic\Builders\VatAccountBuilder;
 use LasseRafn\Economic\Builders\VoucherBuilder;
 use LasseRafn\Economic\Models\CompanySelf;
 use LasseRafn\Economic\Utils\Model;
