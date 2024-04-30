@@ -8,7 +8,7 @@ use LasseRafn\Economic\Models\Project;
 
 class ProjectBuilder extends NewRestBuilder
 {
-    protected $entity = 'projects';
-    protected $model = Project::class;
+	protected $entity = 'projects';
+	protected $model  = Project::class;
 
 }

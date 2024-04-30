@@ -11,43 +11,43 @@ class Model
 {
 	protected $entity;
 	protected $primaryKey;
-	protected $modelClass = self::class;
-    protected $rest_version = '';
+	protected $modelClass   = self::class;
+	protected $rest_version = '';
 	/**
 	 * @var Request
 	 */
 	protected $request;
 
-	public function __construct(Request $request, $data = [])
+	public function __construct( Request $request, $data = [] )
 	{
 		$this->request = $request;
 
 		$data = (array) $data;
 
-		foreach ($data as $key => $value) {
-			$customSetterMethod = 'set'.ucfirst(Str::camel($key)).'Attribute';
+		foreach ( $data as $key => $value ) {
+			$customSetterMethod = 'set' . ucfirst( Str::camel( $key ) ) . 'Attribute';
 
-			if (!method_exists($this, $customSetterMethod)) {
-				$this->setAttribute($key, $value);
+			if ( ! method_exists( $this, $customSetterMethod ) ) {
+				$this->setAttribute( $key, $value );
 			} else {
-				$this->setAttribute($key, $this->{$customSetterMethod}($value));
+				$this->setAttribute( $key, $this->{$customSetterMethod}( $value ) );
 			}
 		}
 	}
 
 	public function __toString()
 	{
-		return json_encode($this->toArray());
+		return json_encode( $this->toArray() );
 	}
 
 	public function toArray()
 	{
 		$data       = [];
-		$class      = new \ReflectionObject($this);
-		$properties = $class->getProperties(\ReflectionProperty::IS_PUBLIC);
+		$class      = new \ReflectionObject( $this );
+		$properties = $class->getProperties( \ReflectionProperty::IS_PUBLIC );
 
 		/** @var \ReflectionProperty $property */
-		foreach ($properties as $property) {
+		foreach ( $properties as $property ) {
 			$data[ $property->getName() ] = $this->{$property->getName()};
 		}
 
@@ -61,79 +61,77 @@ class Model
 	 *
 	 * @return array
 	 */
-	public function toPutArray($overrides = [])
+	public function toPutArray( $overrides = [] )
 	{
-		if (isset($this->puttable)) {
-			return array_merge(Arr::only(
+		if ( isset( $this->puttable ) ) {
+			return array_merge( Arr::only(
 				$this->toArray(),
 				$this->puttable
-			), $overrides);
+			), $overrides );
 		}
 
-		return array_merge($this->toArray(), $overrides);
+		return array_merge( $this->toArray(), $overrides );
 	}
 
-	protected function setAttribute($attribute, $value)
+	protected function setAttribute( $attribute, $value )
 	{
 		$this->{$attribute} = $value;
 	}
 
-    public function setRequest(?Request $request): void
-    {
-        $this->request = $request;
-    }
+	public function setRequest( ?Request $request ): void
+	{
+		$this->request = $request;
+	}
 
 	public function delete()
 	{
-		return $this->request->handleWithExceptions(function () {
-			return $this->request->doRequest('delete', "/{$this->entity}/{$this->{$this->primaryKey}}");
-		});
+		return $this->request->handleWithExceptions( function () {
+			return $this->request->doRequest( 'delete', "/{$this->entity}/{$this->{$this->primaryKey}}" );
+		} );
 	}
 
-	public function update($data = [])
+	public function update( $data = [] )
 	{
-		return $this->updateRaw($this->toPutArray($data));
+		return $this->updateRaw( $this->toPutArray( $data ) );
 	}
 
-	public function updateRaw($data = [])
+	public function updateRaw( $data = [] )
 	{
-		$data = $this->request->formatData($data);
+		$data = $this->request->formatData( $data );
 
-		return $this->request->handleWithExceptions(function () use ($data) {
-			$response = $this->request->doRequest('put', $this->getUpdateEndpoint(), [
-				'json' => $data,
-			]);
+		return $this->request->handleWithExceptions( function () use ( $data ) {
+			$response = $this->request->doRequest( 'put', $this->getUpdateEndpoint(), ['json' => $data] );
 
-			$responseData = json_decode($response->getBody()->getContents());
+			$responseData = json_decode( $response->getBody()->getContents() );
 
-			return new $this->modelClass($this->request, $responseData);
-		});
+			return new $this->modelClass( $this->request, $responseData );
+		} );
 	}
 
 	protected function getUpdateEndpoint()
 	{
-	    $updateEndpoint = "{$this->rest_version}/{$this->entity}";
-	    if (empty($this->rest_version)){
-	        $updateEndpoint .= "/{$this->{$this->primaryKey}}";
-        }
+		$updateEndpoint = "{$this->rest_version}/{$this->entity}";
+		if ( empty( $this->rest_version ) ) {
+			$updateEndpoint .= "/{$this->{$this->primaryKey}}";
+		}
 
-	    return $updateEndpoint;
+		return $updateEndpoint;
 	}
 
-    public function getAllData( Economic $economic ): Model
-    {
-        $this->lines = $economic->getOrderLines( $this->orderNumber, $this );
+	public function getAllData( Economic $economic ): Model
+	{
+		$this->lines = $economic->getOrderLines( $this->orderNumber, $this );
 
-        /* --------------------------------------------------------
-         * Debtor billing address
-         * ----------------------------------------------------- */
-        /** @var Customer $customer */
-        $customer                = $economic->customers()->find( $this->customer->customerNumber );
-        $this->billingAddress    = $customer->address;
-        $this->billingCity       = $customer->city;
-        $this->billingPostalCode = $customer->zip;
-        $this->billingCountry    = $customer->country;
+		/* --------------------------------------------------------
+		 * Debtor billing address
+		 * ----------------------------------------------------- */
+		/** @var Customer $customer */
+		$customer                = $economic->customers()->find( $this->customer->customerNumber );
+		$this->billingAddress    = $customer->address;
+		$this->billingCity       = $customer->city;
+		$this->billingPostalCode = $customer->zip;
+		$this->billingCountry    = $customer->country;
 
-        return $this;
-    }
+		return $this;
+	}
 }

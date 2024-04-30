@@ -5,19 +5,18 @@ namespace LasseRafn\Economic\Models;
 
 use LasseRafn\Economic\Utils\Model;
 
-
-class EmployeeGroup extends Model
+class ProjectGroup extends Model
 {
-	protected $entity       = 'employeegroups';
-	protected $rest_version = '/api/v16.0.0';
+	protected $entity       = 'projectgroups';
 	protected $primaryKey   = 'number';
+	protected $rest_version = '/api/v16.0.0';
 	protected $puttable     = [
 		'name',
-		'number',
+		'type',
 	];
 
-	public $number;
 	public $name;
+	public $type;
 	public $self;
 
 }
