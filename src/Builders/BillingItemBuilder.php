@@ -35,6 +35,15 @@ class BillingItemBuilder extends RackbeatEndpointBuilder
         );
     }
 
+    public function reEnableBillingItem( int $billingItemId, $jsonEncodedData, $data)
+    {
+        return $this->sendPostRequest(
+            'reenable-billing-item?token=' . $this->economicRackbeatApiToken . '&id=' . $billingItemId,
+            $jsonEncodedData,
+            $data
+        );
+    }
+
     public function upgradeRackbeatPlan($upgradeDate, string $jsonEncodedData, array $data)
     {
         return $this->sendPostRequest(
