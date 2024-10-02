@@ -6,6 +6,6 @@ use LasseRafn\Economic\Models\ProductGroup;
 
 class ProductGroupBuilder extends Builder
 {
-	protected $entity = 'product-groups';
+	protected $entity = 'productgroups';
 	protected $model  = ProductGroup::class;
 }
