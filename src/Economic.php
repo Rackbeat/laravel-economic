@@ -263,7 +263,7 @@ class Economic
 	 */
 	public function productGroups()
 	{
-		return new ProductGroupBuilder( $this->request );
+		return new ProductGroupBuilder( $this->newApiRequest );
 	}
 
 	/**
