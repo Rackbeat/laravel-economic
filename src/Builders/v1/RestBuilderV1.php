@@ -19,7 +19,7 @@ class RestBuilderV1 extends BaseBuilder
 	}
 
 	/** Overrides BaseBuilder */
-	private function getItemsFromResponse($response){
+	protected function getItemsFromResponse($response){
 		return json_decode($response->getBody()->getContents())->items;
 	}
 }

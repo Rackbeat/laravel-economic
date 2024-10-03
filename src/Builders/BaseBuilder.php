@@ -280,7 +280,7 @@ class BaseBuilder
         return $items;
     }
 
-	private function getItemsFromResponse($response){
+	protected function getItemsFromResponse($response){
 		return json_decode($response->getBody()->getContents())->collection;
 	}
 }
