@@ -6,5 +6,5 @@ use LasseRafn\Economic\Builders\BaseBuilder;
 
 class ProductApiRestBuilder extends BaseBuilder
 {
-	protected $rest_version = '/products/v1.1.0';
+	protected $rest_version = '/productsapi/v1.1.0';
 }
