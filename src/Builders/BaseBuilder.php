@@ -51,7 +51,7 @@ class BaseBuilder
 		return $this->request->handleWithExceptions( function () use($sortByField) {
 			$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort={$sortByField}");
 
-			$fetchedItems = json_decode($response->getBody()->getContents())->collection;
+			$fetchedItems = $this->getItemsFromResponse($response);
 
 			$response->getBody()->close();
 
@@ -73,7 +73,7 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use($sortByField) {
 		$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages=0&pagesize=1&sort=-{$sortByField}");
 	
-		$fetchedItems = json_decode($response->getBody()->getContents())->collection;
+		$fetchedItems = $this->getItemsFromResponse($response);
 	
 		$response->getBody()->close();
 
@@ -100,7 +100,7 @@ class BaseBuilder
 	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}{$urlQuery}");
 
             $items = collect([]);
-			foreach ( json_decode($response->getBody()->getContents())->collection as $item ) {
+			foreach ( $this->getItemsFromResponse($response) as $item ) {
                 /** @var Model $model */
                 $model = new $this->model($this->request, $item);
 
@@ -131,7 +131,7 @@ class BaseBuilder
         return $this->request->handleWithExceptions(function () use ($pageSize, &$page, &$items, $urlQuery) {
 	        $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
 
-			foreach ( json_decode($response->getBody()->getContents())->collection as $item ) {
+			foreach ( $this->getItemsFromResponse($response) as $item ) {
                 /** @var Model $model */
                 $model = new $this->model($this->request, $item);
 
@@ -165,7 +165,7 @@ class BaseBuilder
             while ($hasMore) {
 	            $response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
 
-				$fetchedItems = empty( $this->rest_version ) ? json_decode($response->getBody()->getContents())->collection : json_decode($response->getBody()->getContents());
+				$fetchedItems = empty( $this->rest_version ) ? $this->getItemsFromResponse($response) : json_decode($response->getBody()->getContents());
 
 				$response->getBody()->close();
 
@@ -279,4 +279,8 @@ class BaseBuilder
 
         return $items;
     }
+
+	private function getItemsFromResponse($response){
+		return json_decode($response->getBody()->getContents())->collection;
+	}
 }
