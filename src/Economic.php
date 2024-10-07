@@ -165,8 +165,6 @@ class Economic
 	}
 
 	/**
-	 * This endpoint is not yet documented by the API team.
-	 *
 	 * @return SupplierGroupBuilder()|Builder
 	 */
 	public function experimentalSupplierGroups()
