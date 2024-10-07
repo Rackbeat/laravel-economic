@@ -2,7 +2,7 @@
 
 namespace LasseRafn\Economic\Builders\v1\SupplierGroup;
 
-use LasseRafn\Economic\Builders\v1\RestBuilderV1;
+use LasseRafn\Economic\Builders\BaseBuilder;
 use LasseRafn\Economic\Models\SupplierGroup;
 
 class SupplierGroupBuilder extends BaseBuilder
