@@ -167,7 +167,7 @@ class Economic
 	/**
 	 * @return SupplierGroupBuilder()|Builder
 	 */
-	public function experimentalSupplierGroups()
+	public function supplierGroups()
 	{
 		return new SupplierGroupBuilder( $this->request );
 	}
