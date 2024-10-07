@@ -6,9 +6,9 @@ use LasseRafn\Economic\Builders\AccountBuilder;
 use LasseRafn\Economic\Builders\AccountingEntryBuilder;
 use LasseRafn\Economic\Builders\AccountingPeriodTotalsBuilder;
 use LasseRafn\Economic\Builders\AccountingYearBuilder;
+use LasseRafn\Economic\Builders\AdditionalInventoryDataBuilder;
 use LasseRafn\Economic\Builders\ArchivedOrderBuilder;
 use LasseRafn\Economic\Builders\BookedInvoiceBuilder;
-use LasseRafn\Economic\Builders\AdditionalInventoryDataBuilder;
 use LasseRafn\Economic\Builders\Builder;
 use LasseRafn\Economic\Builders\ContactBuilder;
 use LasseRafn\Economic\Builders\CostTypeBuilder;
@@ -29,7 +29,6 @@ use LasseRafn\Economic\Builders\PaidInvoiceBuilder;
 use LasseRafn\Economic\Builders\PaymentTermBuilder;
 use LasseRafn\Economic\Builders\ProductBuilder;
 use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
-use LasseRafn\Economic\Builders\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\ProjectBuilder;
 use LasseRafn\Economic\Builders\ProjectGroupBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
@@ -38,6 +37,7 @@ use LasseRafn\Economic\Builders\SupplierBuilder;
 use LasseRafn\Economic\Builders\SupplierGroupBuilder;
 use LasseRafn\Economic\Builders\UnitBuilder;
 use LasseRafn\Economic\Builders\UserBuilder;
+use LasseRafn\Economic\Builders\v1\Products\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\VatZoneBuilder;
 use LasseRafn\Economic\Builders\VoucherBuilder;
 use LasseRafn\Economic\Models\CompanySelf;
@@ -263,7 +263,7 @@ class Economic
 	 */
 	public function productGroups()
 	{
-		return new ProductGroupBuilder( $this->request );
+		return new ProductGroupBuilder( $this->newApiRequest );
 	}
 
 	/**
