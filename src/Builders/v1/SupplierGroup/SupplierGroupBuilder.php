@@ -4,6 +4,7 @@ namespace LasseRafn\Economic\Builders\v1\SupplierGroup;
 
 use LasseRafn\Economic\Builders\BaseBuilder;
 use LasseRafn\Economic\Models\SupplierGroup;
+use LasseRafn\Economic\Utils\Request;
 
 class SupplierGroupBuilder extends BaseBuilder
 {
