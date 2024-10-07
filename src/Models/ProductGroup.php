@@ -6,13 +6,11 @@ use LasseRafn\Economic\Utils\Model;
 
 class ProductGroup extends Model
 {
-	protected $entity     = 'product-groups';
-	protected $primaryKey = 'productGroupNumber';
+	protected $entity     = 'productgroups';
+	protected $primaryKey = 'id';
+	protected $rest_version = 'v1.1.0';
 
-	public $productGroupNumber;
+	public $id;
 	public $name;
-	public $self;
-	public $salesAccounts;
-	public $inventoryEnabled;
-	public $accrual;
+	public $domesticAccountId;
 }

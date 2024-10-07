@@ -6,6 +6,6 @@ use LasseRafn\Economic\Utils\Model;
 
 class SupplierGroup extends Model
 {
-	protected $entity     = 'supplier-groups';
-	protected $primaryKey = 'supplierGroupNumber';
+	protected $entity     = 'suppliersapi';
+	protected $primaryKey = 'number';
 }
