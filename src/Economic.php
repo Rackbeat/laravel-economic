@@ -34,7 +34,7 @@ use LasseRafn\Economic\Builders\ProjectGroupBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
 use LasseRafn\Economic\Builders\SentOrderBuilder;
 use LasseRafn\Economic\Builders\SupplierBuilder;
-use LasseRafn\Economic\Builders\SupplierGroupBuilder;
+use LasseRafn\Economic\Builders\v1\SupplierGroup\SupplierGroupBuilder;
 use LasseRafn\Economic\Builders\UnitBuilder;
 use LasseRafn\Economic\Builders\UserBuilder;
 use LasseRafn\Economic\Builders\v1\Products\ProductGroupBuilder;
