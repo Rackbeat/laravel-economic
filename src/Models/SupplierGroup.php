@@ -6,6 +6,11 @@ use LasseRafn\Economic\Utils\Model;
 
 class SupplierGroup extends Model
 {
+<<<<<<< Updated upstream
 	protected $entity     = 'supplier-groups';
 	protected $primaryKey = 'supplierGroupNumber';
+=======
+	protected $entity     = 'suppliersapi';
+	protected $primaryKey = 'Groups';
+>>>>>>> Stashed changes
 }
