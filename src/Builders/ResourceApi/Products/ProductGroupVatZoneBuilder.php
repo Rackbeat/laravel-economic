@@ -8,10 +8,10 @@ use LasseRafn\Economic\Utils\Request;
 
 class ProductGroupVatZoneBuilder extends RestResourceBuilder
 {
-	public function __construct(Request $request, $data)
+	public function __construct(Request $request, $productGroup)
 	{
 		parent::__construct($request);
-		$this->entity = str_replace( ':productGroupNumber', $data->productGroup->id, $this->entity );
+		$this->entity = str_replace( ':productGroupNumber', $productGroup, $this->entity );
 	}
 
 	protected $rest_api = 'productsapi';

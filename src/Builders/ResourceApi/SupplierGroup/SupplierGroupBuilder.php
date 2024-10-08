@@ -1,6 +1,6 @@
 <?php
 
-namespace LasseRafn\Economic\Builders\v1\SupplierGroup;
+namespace LasseRafn\Economic\Builders\ResourceApi\SupplierGroup;
 
 use LasseRafn\Economic\Builders\BaseBuilder;
 use LasseRafn\Economic\Models\SupplierGroup;

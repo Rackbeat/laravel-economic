@@ -269,7 +269,7 @@ class Economic
 	/**
 	 * @return ProductGroupVatZoneBuilder()|Builder
 	 */
-	public function productGroupVatZones(ProductGroup $productGroup)
+	public function productGroupVatZones(int $productGroup)
 	{
 		return new ProductGroupVatZoneBuilder( $this->newApiRequest, $productGroup );
 	}
