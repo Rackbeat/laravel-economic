@@ -13,7 +13,7 @@ class RestResourceBuilder extends BaseBuilder
 	public function __construct(Request $request)
 	{
 		parent::__construct($request);
-		$this->rest_version .= $this->rest_api . '/' . $this->rest_version;
+		$this->rest_version = $this->rest_api . '/' . $this->rest_version;
 	}
 
 	/** Overrides BaseBuilder */
