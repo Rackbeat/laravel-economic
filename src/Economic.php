@@ -39,6 +39,8 @@ use LasseRafn\Economic\Builders\UnitBuilder;
 use LasseRafn\Economic\Builders\UserBuilder;
 use LasseRafn\Economic\Builders\v1\Products\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\VatZoneBuilder;
+use LasseRafn\Economic\Builders\VatTypeBuilder;
+use LasseRafn\Economic\Builders\VatAccountBuilder;
 use LasseRafn\Economic\Builders\VoucherBuilder;
 use LasseRafn\Economic\Models\CompanySelf;
 use LasseRafn\Economic\Utils\Model;
@@ -215,9 +217,25 @@ class Economic
 	{
 		return new VatZoneBuilder( $this->request );
 	}
+	
+	/**
+	 * @return VatTypeBuilder|Builder
+	 */
+	public function vatTypes()
+	{
+		return new VatTypeBuilder( $this->request );
+	}
+	
+	/**
+	 * @return VatAccountBuilder|Builder
+	 */
+	public function vatAccounts()
+	{
+		return new VatAccountBuilder( $this->request );
+	}
 
 	/**
-	 * @return VatZoneBuilder|Builder
+	 * @return PaymentTermBuilder|Builder
 	 */
 	public function paymentTerms()
 	{
