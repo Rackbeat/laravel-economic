@@ -53,5 +53,12 @@ class BillingItemBuilder extends RackbeatEndpointBuilder
         );
     }
 
-
+    public function downgradeRackbeatPlan($downgradeDate, string $jsonEncodedData, array $data)
+    {
+        return $this->sendPostRequest(
+            'downgrade-rackbeat-plan?token=' . $this->economicRackbeatApiToken . '&downgradeDate=' . $downgradeDate,
+            $jsonEncodedData,
+            $data
+        );
+    }
 }
