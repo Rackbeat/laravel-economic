@@ -76,7 +76,7 @@ class RackbeatEndpointBuilder
 		);
 	}
 
-	private function sendGetRequest( $endpointUri )
+	protected function sendGetRequest( $endpointUri )
 	{
 		return Http::retry( 3, 500, function ( $exception ) {
 			return $exception->getCode() >= 500;
@@ -86,7 +86,7 @@ class RackbeatEndpointBuilder
 		] )->get( $this->basePath . $endpointUri );
 	}
 
-	private function sendPostRequest( string $endpointUri, string $jsonEncodedPayload, array $payload )
+    protected function sendPostRequest( string $endpointUri, string $jsonEncodedPayload, array $payload )
 	{
 		return Http::retry( 3, 500, function ( $exception ) {
 			return $exception->getCode() >= 500;
@@ -96,7 +96,7 @@ class RackbeatEndpointBuilder
 		] )->post( $this->basePath . $endpointUri, $payload );
 	}
 
-	private function getSignature( $data = "" )
+    protected function getSignature( $data = "" )
 	{
 		$key = config( 'economic.economic_rackbeat_rsa_key' );
 
