@@ -92,7 +92,13 @@ class Request
 		if (filter_var(config('economic.retry_server_exceptions.enabled'), FILTER_VALIDATE_BOOLEAN)) {
 			return retry(config('economic.retry_server_exceptions.retries', 3), function () use ($method, $path, $options) {
 				return $this->curl->{$method}($path, $options);
-			}, config('economic.retry_server_exceptions.timeout_ms', 10000), function (\Throwable $throwable) { return $throwable->getCode() >= 500 && $throwable->getCode() <= 599; });
+			}, config('economic.retry_server_exceptions.timeout_ms', 10000), function (\Throwable $throwable) { 
+				return (int) $throwable->getCode() === 429
+					|| (
+						$throwable->getCode() >= 500 
+						&& $throwable->getCode() <= 599
+					   );
+			});
 		}
 
 		return $this->curl->{$method}($path, $options);
