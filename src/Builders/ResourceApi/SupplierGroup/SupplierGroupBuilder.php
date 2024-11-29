@@ -1,15 +1,19 @@
 <?php
 
-namespace LasseRafn\Economic\Builders\v1;
+namespace LasseRafn\Economic\Builders\ResourceApi\SupplierGroup;
 
 use LasseRafn\Economic\Builders\BaseBuilder;
+use LasseRafn\Economic\Models\SupplierGroup;
 use LasseRafn\Economic\Utils\Request;
 
-class RestBuilderV1 extends BaseBuilder
+class SupplierGroupBuilder extends BaseBuilder
 {
-	const VERSION = 'v1.1.0';
+	const VERSION = 'v1.0.1';
 
-	protected $rest_api = '';
+	protected $rest_api = 'suppliersapi';
+	protected $entity = 'Groups';
+	protected $model  = SupplierGroup::class;
+
 	protected $rest_version = '/';
 
 	public function __construct(Request $request)

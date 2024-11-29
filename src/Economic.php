@@ -31,18 +31,20 @@ use LasseRafn\Economic\Builders\ProductBuilder;
 use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
 use LasseRafn\Economic\Builders\ProjectBuilder;
 use LasseRafn\Economic\Builders\ProjectGroupBuilder;
+use LasseRafn\Economic\Builders\ResourceApi\Products\ProductGroupBuilder;
+use LasseRafn\Economic\Builders\ResourceApi\Products\ProductGroupVatZoneBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
 use LasseRafn\Economic\Builders\SentOrderBuilder;
 use LasseRafn\Economic\Builders\SupplierBuilder;
 use LasseRafn\Economic\Builders\v1\SupplierGroup\SupplierGroupBuilder;
 use LasseRafn\Economic\Builders\UnitBuilder;
 use LasseRafn\Economic\Builders\UserBuilder;
-use LasseRafn\Economic\Builders\v1\Products\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\VatZoneBuilder;
 use LasseRafn\Economic\Builders\VatTypeBuilder;
 use LasseRafn\Economic\Builders\VatAccountBuilder;
 use LasseRafn\Economic\Builders\VoucherBuilder;
 use LasseRafn\Economic\Models\CompanySelf;
+use LasseRafn\Economic\Models\ProductGroup;
 use LasseRafn\Economic\Utils\Model;
 use LasseRafn\Economic\Utils\Request;
 
@@ -280,6 +282,14 @@ class Economic
 	public function productGroups()
 	{
 		return new ProductGroupBuilder( $this->newApiRequest );
+	}
+
+	/**
+	 * @return ProductGroupVatZoneBuilder()|Builder
+	 */
+	public function productGroupVatZones(int $productGroup)
+	{
+		return new ProductGroupVatZoneBuilder( $this->newApiRequest, $productGroup );
 	}
 
 	/**
