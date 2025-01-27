@@ -24,6 +24,51 @@ class RackbeatEndpointBuilder
 		return $this->sendGetRequest( 'get-all-data?token=' . $this->economicRackbeatApiToken );
 	}
 
+	public function getExtraDataCustomers()
+	{
+		return $this->sendGetRequest( 'data-sync/customers?token=' . $this->economicRackbeatApiToken );
+	}
+
+	public function getExtraDataSupplierProductMappings()
+	{
+		return $this->sendGetRequest( 'data-sync/supplier-product-mappings?token=' . $this->economicRackbeatApiToken );
+	}
+
+	public function getExtraDataProductCollectionLines()
+	{
+		return $this->sendGetRequest( 'data-sync/product-collection-lines?token=' . $this->economicRackbeatApiToken );
+	}
+
+	public function getExtraDataProductCategories()
+	{
+		return $this->sendGetRequest( 'data-sync/product-categories?token=' . $this->economicRackbeatApiToken );
+	}
+
+	public function getExtraDataProductDiscountGroups()
+	{
+		return $this->sendGetRequest( 'data-sync/product-discount-groups?token=' . $this->economicRackbeatApiToken );
+	}
+
+	public function getExtraDataLocations()
+	{
+		return $this->sendGetRequest( 'data-sync/locations?token=' . $this->economicRackbeatApiToken );
+	}
+
+	public function getExtraDataLanguageLayers()
+	{
+		return $this->sendGetRequest( 'data-sync/language-layers?token=' . $this->economicRackbeatApiToken );
+	}
+
+	public function getExtraDataDiscountGroups()
+	{
+		return $this->sendGetRequest( 'data-sync/discount-groups?token=' . $this->economicRackbeatApiToken );
+	}
+
+	public function getExtraDataPriceGroups()
+	{
+		return $this->sendGetRequest( 'data-sync/price-groups?token=' . $this->economicRackbeatApiToken );
+	}
+
 	public function getDocumentCategories()
 	{
 		return $this->sendGetRequest( 'get-document-categories?token=' . $this->economicRackbeatApiToken );
