@@ -18,6 +18,7 @@ class Project extends Model
 		'isMainProject',
 		'projectGroupNumber',
 		'mainProjectNumber',
+		'closedDate'
 	];
 
 	public $number;
@@ -27,6 +28,7 @@ class Project extends Model
 	public $isMainProject;
 	public $projectGroupNumber;
 	public $mainProjectNumber;
+	public $closedDate;
 	public $self;
 
 }
