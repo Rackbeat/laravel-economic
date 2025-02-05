@@ -134,4 +134,14 @@ class Model
 
 		return $this;
 	}
+
+    public function getPrimaryKeyName()
+    {
+        return $this->primaryKey;
+    }
+
+    public function getPrimaryKeyValue()
+    {
+        return $this->{$this->primaryKey};
+    }
 }
