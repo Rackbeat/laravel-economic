@@ -16,6 +16,7 @@ use LasseRafn\Economic\Builders\CostTypeGroupBuilder;
 use LasseRafn\Economic\Builders\CustomerAddressBuilder;
 use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
+use LasseRafn\Economic\Builders\DeliveryLocationBuilder;
 use LasseRafn\Economic\Builders\DepartmentBuilder;
 use LasseRafn\Economic\Builders\DraftInvoiceBuilder;
 use LasseRafn\Economic\Builders\DraftOrderBuilder;
@@ -505,5 +506,13 @@ class Economic
 	public function journalEntries( $journalNumber )
 	{
 		return new JournalEntriesBuilder( $this->request, $journalNumber );
+	}
+
+	/**
+	 * @return DeliveryLocationBuilder
+	 */
+	public function deliveryLocations()
+	{
+		return new DeliveryLocationBuilder( $this->newApiRequest );
 	}
 }
