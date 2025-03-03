@@ -209,7 +209,7 @@ class Economic
 	 */
 	public function resourceCustomerContacts()
 	{
-		return new CustomerContactBuilder( $this->request );
+		return new CustomerContactBuilder( $this->newApiRequest );
 	}
 
 	/**
