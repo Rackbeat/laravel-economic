@@ -26,47 +26,47 @@ class RackbeatEndpointBuilder
 
 	public function getExtraDataCustomers()
 	{
-		return $this->sendGetRequest( 'data-sync/customers?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/customers?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getExtraDataSupplierProductMappings()
 	{
-		return $this->sendGetRequest( 'data-sync/supplier-product-mappings?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/supplier-product-mappings?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getExtraDataProductCollectionLines()
 	{
-		return $this->sendGetRequest( 'data-sync/product-collection-lines?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/product-collection-lines?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getExtraDataProductCategories()
 	{
-		return $this->sendGetRequest( 'data-sync/product-categories?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/product-categories?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getExtraDataProductDiscountGroups()
 	{
-		return $this->sendGetRequest( 'data-sync/product-discount-groups?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/product-discount-groups?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getExtraDataLocations()
 	{
-		return $this->sendGetRequest( 'data-sync/locations?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/locations?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getExtraDataLanguageLayers()
 	{
-		return $this->sendGetRequest( 'data-sync/language-layers?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/language-layers?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getExtraDataDiscountGroups()
 	{
-		return $this->sendGetRequest( 'data-sync/discount-groups?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/discount-groups?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getExtraDataPriceGroups()
 	{
-		return $this->sendGetRequest( 'data-sync/price-groups?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/price-groups?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
 	}
 
 	public function getDocumentCategories()
