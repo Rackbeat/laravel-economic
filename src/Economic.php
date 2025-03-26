@@ -203,7 +203,6 @@ class Economic
 	}
 
 	/**
-	 * @param integer $customerNumber
 	 *
 	 * @return CustomerContactBuilder()|Builder
 	 */
