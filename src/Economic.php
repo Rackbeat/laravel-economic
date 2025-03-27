@@ -35,6 +35,7 @@ use LasseRafn\Economic\Builders\ProjectGroupBuilder;
 use LasseRafn\Economic\Builders\ResourceApi\Products\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\ResourceApi\Products\ProductGroupVatZoneBuilder;
 use LasseRafn\Economic\Builders\ResourceApi\SupplierGroup\SupplierGroupBuilder;
+use LasseRafn\Economic\Builders\ResourceApi\Customers\CustomerContactBuilder;
 use LasseRafn\Economic\Builders\SelfBuilder;
 use LasseRafn\Economic\Builders\SentOrderBuilder;
 use LasseRafn\Economic\Builders\SupplierBuilder;
@@ -200,6 +201,15 @@ class Economic
 	public function customerContacts( $customerNumber )
 	{
 		return new ContactBuilder( $this->request, $customerNumber );
+	}
+
+	/**
+	 *
+	 * @return CustomerContactBuilder()|Builder
+	 */
+	public function resourceCustomerContacts()
+	{
+		return new CustomerContactBuilder( $this->newApiRequest );
 	}
 
 	/**
