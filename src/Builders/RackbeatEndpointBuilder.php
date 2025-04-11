@@ -76,6 +76,15 @@ class RackbeatEndpointBuilder
 		);
 	}
 
+	public function initiateOffboarding(string $jsonEncodedData, array $data )
+	{
+		return $this->sendPostRequest(
+			'initiate-offboarding?token=' . $this->economicRackbeatApiToken,
+			$jsonEncodedData,
+			$data
+		);
+	}
+
 	protected function sendGetRequest( $endpointUri )
 	{
 		return Http::retry( 3, 500, function ( $exception ) {
