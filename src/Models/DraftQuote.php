@@ -63,9 +63,12 @@ class DraftQuote extends Model
 	public $customer;
 	public $recipient;
 	public $deliveryLocation;
+	public $delivery;
 	public $references;
+	public $notes;
 	public $layout;
 	public $pdf;
 	public $lastUpdated;
+	public $soap;
 	public $self;
 }
