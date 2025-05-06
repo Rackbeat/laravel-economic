@@ -1,19 +1,20 @@
-<?php
+<?php 
 
 namespace LasseRafn\Economic\Models;
 
 use LasseRafn\Economic\Utils\Model;
 
-class DraftQuote extends Model
+
+class SentQuote extends Model
 {
-	protected $entity     = 'quotes';
+	protected $entity     = '/quotes/sent';
 	protected $primaryKey = 'quoteNumber';
 
 	protected $puttable = [
 		'quoteNumber',
     	'salesDocumentType',
+    	'orderNumberDb',
     	'templates',
-	    'attachment',
 	    'lines',
 	    'date',
 	    'currency',
@@ -31,12 +32,9 @@ class DraftQuote extends Model
 	    'paymentTerms',
 	    'customer',
 	    'recipient',
-	    'delivery',
 	    'deliveryLocation',
-	    'references',
 	    'project',
-	    'layout',
-	    'notes',
+	    'references',
 	    'pdf',
 	    'lastUpdated',
 	    'self'
@@ -46,7 +44,6 @@ class DraftQuote extends Model
 	public $salesDocumentType;
 	public $orderNumberDb;
 	public $templates;
-	public $attachment;
 	public $lines;
 	public $date;
 	public $currency;
@@ -67,10 +64,9 @@ class DraftQuote extends Model
 	public $deliveryLocation;
 	public $delivery;
 	public $references;
-	public $notes;
-	public $layout;
-	public $pdf;
 	public $project;
+	public $notes;
+	public $pdf;
 	public $lastUpdated;
 	public $soap;
 	public $self;
