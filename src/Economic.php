@@ -404,7 +404,7 @@ class Economic
 	*/
 	public function draftQuotes()
 	{
-		return new DraftOrderBuilder( $this->request );	
+		return new DraftQuoteBuilder( $this->request );	
 	}
 
 	/**
