@@ -18,6 +18,7 @@ use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
 use LasseRafn\Economic\Builders\DepartmentBuilder;
 use LasseRafn\Economic\Builders\DraftInvoiceBuilder;
+use LasseRafn\Economic\Builders\DraftQuoteBuilder;
 use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
 use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
