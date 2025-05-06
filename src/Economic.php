@@ -400,6 +400,14 @@ class Economic
 	}
 
 	/**
+	* @return DraftQuoteBuilder
+	*/
+	public function draftQuotes()
+	{
+		return new DraftOrderBuilder( $this->request );	
+	}
+
+	/**
 	 * @return DraftOrderBuilder
 	 */
 	public function draftOrders()
