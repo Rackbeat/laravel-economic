@@ -6,7 +6,7 @@ use LasseRafn\Economic\Utils\Model;
 
 class DraftQuote extends Model
 {
-	protected $entity     = 'quotes';
+	protected $entity     = 'quotes/drafts';
 	protected $primaryKey = 'quoteNumber';
 
 	protected $puttable = [
