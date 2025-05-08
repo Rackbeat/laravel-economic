@@ -18,6 +18,9 @@ use LasseRafn\Economic\Builders\CustomerBuilder;
 use LasseRafn\Economic\Builders\CustomerGroupBuilder;
 use LasseRafn\Economic\Builders\DepartmentBuilder;
 use LasseRafn\Economic\Builders\DraftInvoiceBuilder;
+use LasseRafn\Economic\Builders\DraftQuoteBuilder;
+use LasseRafn\Economic\Builders\SentQuoteBuilder;
+use LasseRafn\Economic\Builders\ArchivedQuoteBuilder;
 use LasseRafn\Economic\Builders\DraftOrderBuilder;
 use LasseRafn\Economic\Builders\EmployeeBuilder;
 use LasseRafn\Economic\Builders\EmployeeGroupBuilder;
@@ -397,6 +400,30 @@ class Economic
 	public function sentOrders()
 	{
 		return new SentOrderBuilder( $this->request );
+	}
+
+	/**
+	* @return DraftQuoteBuilder
+	*/
+	public function draftQuotes()
+	{
+		return new DraftQuoteBuilder( $this->request );	
+	}
+
+	/**
+	* @return SentQuoteBuilder
+	*/
+	public function sentQuotes()
+	{
+		return new SentQuoteBuilder( $this->request );	
+	}
+
+	/**
+	* @return ArchivedQuoteBuilder
+	*/
+	public function archivedQuotes()
+	{
+		return new ArchivedQuoteBuilder( $this->request );	
 	}
 
 	/**
