@@ -7,7 +7,7 @@ use LasseRafn\Economic\Utils\Model;
 
 class SentQuote extends Model
 {
-	protected $entity     = '/quotes/sent';
+	protected $entity     = 'quotes/sent';
 	protected $primaryKey = 'quoteNumber';
 
 	protected $puttable = [
