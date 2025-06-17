@@ -53,7 +53,7 @@ class QueryGeneratorService
 		$i = 1;
 		foreach ( $filterParameters as $filter ) {
 			// To support passing in 'and' / 'or' as an individual filter rather than ['', 'and', '']
-			if ( ! \is_array( $filter ) && \count( $filter ) === 1 ) {
+			if ( \count( $filter ) === 1 ) {
 				$filterOperator = self::getOperator( $filter[0] ?? $filter );
 
 				if ( ( $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) ) {
@@ -64,11 +64,7 @@ class QueryGeneratorService
 			}
 
 			$filterOperator = self::getOperator( $filter[1] );
-			$baseString     .= $filter[0] . $filterOperator->queryString . self::transformFilterValue( $filter[2], $filterOperator );
-
-			if ( ! ( $filterOperator instanceof OrOperator || $filterOperator instanceof AndOperator ) && \count( $filterParameters ) > $i ) {
-				$baseString .= ( new AndOperator )->queryString;
-			}
+			$baseString    .= $filter[0] . $filterOperator->queryString . self::transformFilterValue( $filter[2], $filterOperator );
 
 			$i++;
 		}
