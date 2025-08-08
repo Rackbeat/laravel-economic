@@ -3,6 +3,7 @@
 namespace LasseRafn\Economic\Builders;
 
 use LasseRafn\Economic\Models\DraftInvoice;
+use LasseRafn\Economic\Utils\Request;
 
 class DraftInvoiceBuilder extends Builder
 {
