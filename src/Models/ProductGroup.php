@@ -13,4 +13,5 @@ class ProductGroup extends Model
 	public $id;
 	public $name;
 	public $domesticAccountId;
+	public $objectVersion;
 }
