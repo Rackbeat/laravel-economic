@@ -81,9 +81,9 @@ class RackbeatEndpointBuilder
 		return $this->sendGetRequest( 'get-document?token=' . $this->economicRackbeatApiToken . '&documentId=' . $documentId );
 	}
 
-	public function getUnprocessedDocuments()
+	public function getUnprocessedDocuments(int $page = 0, string $sortField = 'createdAt', string $sortDirection = '-')
 	{
-		return $this->sendGetRequest( 'get-unprocessed-documents?token=' . $this->economicRackbeatApiToken );
+		return $this->sendGetRequest( 'data-sync/get-unprocessed-documents?token=' . $this->economicRackbeatApiToken . '&pageSize=2&skipPages=' . $page . '&sort=' . $sortDirection . $sortField  );
 	}
 
 	public function getDocumentsByCategory( int $categoryId )
