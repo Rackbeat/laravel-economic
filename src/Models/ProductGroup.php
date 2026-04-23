@@ -8,9 +8,10 @@ class ProductGroup extends Model
 {
 	protected $entity     = 'productgroups';
 	protected $primaryKey = 'id';
-	protected $rest_version = 'v1.1.0';
+	protected $rest_version = 'productsapi/v1.1.0';
 
 	public $id;
 	public $name;
 	public $domesticAccountId;
+	public $objectVersion;
 }
