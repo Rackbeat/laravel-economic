@@ -35,6 +35,7 @@ use LasseRafn\Economic\Builders\ProductBuilder;
 use LasseRafn\Economic\Builders\ProductCurrencyPriceBuilder;
 use LasseRafn\Economic\Builders\ProjectBuilder;
 use LasseRafn\Economic\Builders\ProjectGroupBuilder;
+use LasseRafn\Economic\Builders\BillingItemBuilder;
 use LasseRafn\Economic\Builders\ResourceApi\Products\ProductGroupBuilder;
 use LasseRafn\Economic\Builders\ResourceApi\Products\ProductGroupVatZoneBuilder;
 use LasseRafn\Economic\Builders\ResourceApi\SupplierGroup\SupplierGroupBuilder;
@@ -293,6 +294,14 @@ class Economic
 	public function products()
 	{
 		return new ProductBuilder( $this->request );
+	}
+
+	/**
+	 * @return BillingItemBuilder
+	 */
+	public function billingItems()
+	{
+		return new BillingItemBuilder( $this->newApiRequest );
 	}
 
 	/**
