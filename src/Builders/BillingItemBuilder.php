@@ -16,7 +16,7 @@ class BillingItemBuilder extends RestResourceBuilder
 
 	/**
 	 * @param int      $id
-	 * @param int|null $agreementNumber
+	 * @param int|null $agreementNumber Only required when the token is not scoped to a specific agreement
 	 *
 	 * @return Model|ExternalBillingItem
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
@@ -57,7 +57,7 @@ class BillingItemBuilder extends RestResourceBuilder
 		$urlQuery = \LasseRafn\Economic\Services\QueryGeneratorService::generateQuery($filters, [], true);
 
 		return $this->request->handleWithExceptions(function () use ($pageSize, &$page, &$items, $urlQuery) {
-			$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}/paged?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
+			$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}/paged?skipPages={$page}&pageSize={$pageSize}{$urlQuery}");
 
 			foreach ($this->getItemsFromResponse($response) as $item) {
 				$model = new $this->model($this->request, $item);
@@ -89,7 +89,7 @@ class BillingItemBuilder extends RestResourceBuilder
 
 		return $this->request->handleWithExceptions(function () use (&$hasMore, $pageSize, &$page, &$items, $urlQuery) {
 			while ($hasMore) {
-				$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}/paged?skippages={$page}&pagesize={$pageSize}{$urlQuery}");
+				$response = $this->request->doRequest('get', "{$this->rest_version}/{$this->entity}/paged?skipPages={$page}&pageSize={$pageSize}{$urlQuery}");
 
 				$fetchedItems = $this->getItemsFromResponse($response);
 
@@ -139,7 +139,7 @@ class BillingItemBuilder extends RestResourceBuilder
 	/**
 	 * @param array $items Array of ExternalBillingItem data
 	 *
-	 * @return \Illuminate\Support\Collection|ExternalBillingItem[]
+	 * @return \Illuminate\Support\Collection ids of the created items
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicClientException
 	 * @throws \LasseRafn\Economic\Exceptions\EconomicRequestException
 	 */
@@ -154,16 +154,12 @@ class BillingItemBuilder extends RestResourceBuilder
 				'json' => $items
 			]);
 
+			// Response shape: { "ids": [int64, ...] } — not an array of full items
 			$responseData = json_decode($response->getBody()->getContents());
 
 			$response->getBody()->close();
 
-			$collection = collect([]);
-			foreach ($responseData as $item) {
-				$collection->push(new $this->model($this->request, $item));
-			}
-
-			return $collection;
+			return collect($responseData->ids);
 		});
 	}
 
