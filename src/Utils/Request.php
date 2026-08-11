@@ -19,7 +19,7 @@ class Request
 	{
 		
 		$data = [
-            'base_uri'        => $baseUri ?? config('economic.request_endpoint'),
+            'base_uri'        => $baseUri ?? app( 'economic.urls' )->get( 'request_endpoint' ),
             'headers'         => [
                 'X-AppSecretToken'      => $apiSecret,
                 'X-AgreementGrantToken' => $agreementToken,

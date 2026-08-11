@@ -75,7 +75,7 @@ class Economic
 		$this->stripNullValues = $stripNull ?? config( 'economic.strip_null', false );
 
 		$this->initRequest( $base_uri );
-		$this->initNewApiRequest( config( 'economic.rest_endpoint' ) );
+		$this->initNewApiRequest( app( 'economic.urls' )->get( 'rest_endpoint' ) );
 	}
 
 	public function addBeforeRequestHook( $callback )
@@ -119,7 +119,7 @@ class Economic
 			$redirectUrl = '&redirectUrl=' . urlencode( $redirectUrl );
 		}
 
-		return config( 'economic.auth_endpoint' ) . $this->apiPublic . $redirectUrl;
+		return app( 'economic.urls' )->get( 'auth_endpoint' ) . $this->apiPublic . $redirectUrl;
 	}
 
 	/**
