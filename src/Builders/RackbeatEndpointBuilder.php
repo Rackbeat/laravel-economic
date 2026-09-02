@@ -13,7 +13,7 @@ class RackbeatEndpointBuilder
 	{
 		$this->economicRackbeatApiToken = $economicRackbeatApiToken;
 
-		$this->basePath = config('economic.economic_rackbeat_api_base');
+		$this->basePath = rescue(function () { return app( 'economic.urls' )->get( 'economic_rackbeat_api_base' );}, function () { return config( 'economic.economic_rackbeat_api_base' ); }, false);
 	}
 
 	public function generateToken( $economicAgreementNumber )
