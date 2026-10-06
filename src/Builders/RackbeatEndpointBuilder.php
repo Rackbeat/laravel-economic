@@ -21,11 +21,6 @@ class RackbeatEndpointBuilder
 		return $this->sendGetRequest( 'generate-token?agreementNumber=' . $economicAgreementNumber );
 	}
 
-	public function getRackbeatExtraData()
-	{
-		return $this->sendGetRequest( 'get-all-data?token=' . $this->economicRackbeatApiToken );
-	}
-
 	public function getExtraDataCustomers()
 	{
 		return $this->sendGetRequest( 'data-sync/customers?token=' . $this->economicRackbeatApiToken .'&returnAll=true');
