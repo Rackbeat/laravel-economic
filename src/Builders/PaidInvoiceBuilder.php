@@ -8,7 +8,7 @@
 
 namespace LasseRafn\Economic\Builders;
 
-use App\Economic\Models\PaidInvoice;
+use LasseRafn\Economic\Models\PaidInvoice;
 
 class PaidInvoiceBuilder extends Builder
 {

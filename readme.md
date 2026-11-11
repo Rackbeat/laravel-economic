@@ -7,28 +7,24 @@
 <a href="https://styleci.io/repos/75620408"><img src="https://styleci.io/repos/75620408/shield?branch=master" alt="StyleCI Status"></a>
 </p>
 
+## Requirements
+
+| Package version | PHP    | Laravel |
+|-----------------|--------|---------|
+| 6.x             | ^8.3   | 13.x    |
+| 5.x             | >=7.3  | 8.x, 9.x |
+
 ## Installation
 
 1. Require using composer
 
 ``` bash
-composer require lasserafn/laravel-economic
+composer require rackbeat/laravel-economic
 ```
 
-In Laravel 5.5, and above, the package will auto-register the service provider. In Laravel 5.4 you must install this service provider.
+The service provider is auto-registered through Laravel package discovery.
 
-2. Add the EconomicServiceProvider to your `config/app.php` providers array.
-
-``` php
-<?php 
-'providers' => [
-    // ...
-    \LasseRafn\Economic\EconomicServiceProvider::class,
-    // ...
-]
-```
-
-3. Copy the package config to your local config with the publish command: 
+2. Copy the package config to your local config with the publish command: 
 
 ``` bash
 php artisan vendor:publish --provider="LasseRafn\Economic\EconomicServiceProvider"

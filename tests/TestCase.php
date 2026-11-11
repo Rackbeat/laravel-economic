@@ -2,13 +2,13 @@
 
 namespace Tests;
 
-use \Orchestra\Testbench\TestCase as BaseTestCase;
-use Rackbeat\Providers\DashboardJobsArchiveServiceProvider;
+use LasseRafn\Economic\EconomicServiceProvider;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
-  public function setUp(): void
-  {
-      parent::setUp();
-  }
+    protected function getPackageProviders($app): array
+    {
+        return [EconomicServiceProvider::class];
+    }
 }

@@ -17,7 +17,7 @@ class InvoiceTemplateBuilder extends Builder
 		parent::__construct( $request );
 	}
 
-	public function get( $filters = [] )
+	public function get( $filters = [], $sorting = [] )
 	{
 		return $this->request->handleWithExceptions( function () {
 			$response = $this->request->doRequest( 'get', "/{$this->entity}" );

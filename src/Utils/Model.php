@@ -7,6 +7,12 @@ use Illuminate\Support\Str;
 use LasseRafn\Economic\Economic;
 use LasseRafn\Economic\Models\Customer;
 
+/**
+ * API response fields are hydrated onto the model as public properties, and not
+ * every field e-conomic returns is declared on each model, so dynamic properties
+ * must stay allowed (deprecated since PHP 8.2 without this attribute).
+ */
+#[\AllowDynamicProperties]
 class Model
 {
 	protected $entity;
