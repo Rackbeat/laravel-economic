@@ -1,13 +1,8 @@
 <?php
 
-use Tests\TestCase;
-
 use LasseRafn\Economic\Services\QueryGeneratorService;
-
-use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class QueryGeneratorServiceTest extends TestCase
 {
@@ -26,19 +21,19 @@ class QueryGeneratorServiceTest extends TestCase
         $this->sorts = ['-orderNumber'];
     }
 
-    /** @test */
+    #[Test]
     public function will_correctly_add_filter_string()
     {
       $this->assertEquals('?filter=lastUpdated$gte:2023-02-15', QueryGeneratorService::generateQuery($this->filters));
     }
 
-    /** @test */
+    #[Test]
     public function will_correctly_add_filter_string_with_ampersand_if_connectorType_is_true()
     {
       $this->assertEquals('&filter=lastUpdated$gte:2023-02-15', QueryGeneratorService::generateQuery($this->filters, [], true));
     }
 
-    /** @test */
+    #[Test]
     public function will_correctly_add_multiple_filter_strings()
     {
       $this->filters[] = ['city', '=', 'Skopje'];
@@ -48,19 +43,19 @@ class QueryGeneratorServiceTest extends TestCase
       $this->assertEquals('?filter=lastUpdated$gte:2023-02-15$and:city$eq:Skopje$and:country$eq:Macedonia', QueryGeneratorService::generateQuery($this->filters)); 
     }
 
-    /** @test */
+    #[Test]
     public function will_correctly_add_sort_string()
     {
       $this->assertEquals('?sort=-orderNumber', QueryGeneratorService::generateQuery([], $this->sorts)); 
     }
 
-    /** @test */
+    #[Test]
     public function will_correctly_add_sort_string_with_ampersand_if_connectorType_is_true()
     {
       $this->assertEquals('&sort=-orderNumber', QueryGeneratorService::generateQuery([], $this->sorts, true)); 
     }
 
-    /** @test */
+    #[Test]
     public function will_correctly_sort_multiple_sorting_predicates()
     {
       array_push($this->sorts, 'age');
@@ -69,19 +64,19 @@ class QueryGeneratorServiceTest extends TestCase
       $this->assertEquals('?sort=-orderNumber,age,-name', QueryGeneratorService::generateQuery([], $this->sorts)); 
     }
 
-    /** @test */
+    #[Test]
     public function will_correctly_attach_both_filter_and_sort_strings()
     {
       $this->assertEquals('?filter=lastUpdated$gte:2023-02-15&sort=-orderNumber', QueryGeneratorService::generateQuery($this->filters, $this->sorts)); 
     }
 
-    /** @test */
+    #[Test]
     public function string_will_begin_with_an_ampersand_if_connectorType_is_true()
     {
       $this->assertEquals('&filter=lastUpdated$gte:2023-02-15&sort=-orderNumber', QueryGeneratorService::generateQuery($this->filters, $this->sorts, true)); 
     }
 
-    /** @test */
+    #[Test]
     public function multiple_string_and_filter_predicates_will_get_built_together()
     {
 
@@ -95,7 +90,7 @@ class QueryGeneratorServiceTest extends TestCase
       $this->assertEquals('?filter=lastUpdated$gte:2023-02-15$and:city$eq:Skopje$and:country$eq:Macedonia&sort=-orderNumber,age,-name', QueryGeneratorService::generateQuery($this->filters, $this->sorts, false)); 
     }
 
-    /** @test */
+    #[Test]
     public function if_empty_arrays_get_passed_nothing_will_get_returned()
     {
       $this->assertEquals('', QueryGeneratorService::generateQuery([], []));

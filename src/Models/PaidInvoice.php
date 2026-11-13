@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Economic\Models;
+namespace LasseRafn\Economic\Models;
 
 use LasseRafn\Economic\Utils\Model;
 
